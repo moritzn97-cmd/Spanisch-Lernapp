@@ -11,7 +11,7 @@
 <section class="hero"><h1>¡Hola!</h1><p id="heroText">Dein Spanisch-Training für heute.</p></section>
 <nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button></nav>
 
-<section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: 10 Minuten Spanisch.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lektion.</p></div></section>
+<section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card" id="adaptiveInfo"><div class="sectiontitle"><h2>Dein Lernplan</h2><span class="tag">adaptiv</span></div><p class="small muted">Die App priorisiert fällige und unsichere Wörter. Neue Inhalte werden mit Wiederholung gemischt, statt einfach möglichst viel Stoff auf einmal zu zeigen.</p></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: ca. 12 Minuten mit aktivem Abrufen und Wiederholen.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lerneinheit.</p><button class="btn" onclick="startAdaptiveSession()">▶ Empfohlene Einheit starten</button></div></section>
 
 <section id="learn" class="tab hidden"><div class="card"><div class="sectiontitle"><span class="tag" id="lessonTag">A1</span><span class="small muted" id="counter"></span></div><div id="exercise"></div></div></section>
 <section id="review" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Spaced Repetition</h2><span class="tag" id="dueCount">0 fällig</span></div><p class="muted small">Wörter werden wiederholt, bevor du sie vergisst.</p><div id="reviewBody"></div></div></section>
@@ -25,17 +25,84 @@ const lessons=[
 {id:4,title:"Über mich",words:[["me llamo","ich heiße"],["vivo","ich wohne"],["estudio","ich studiere"],["trabajo","ich arbeite"],["familia","Familie"],["edad","Alter"],["gustar","gefallen"],["también","auch"]]}
 ];
 let xp=+localStorage.getItem("es_xp")||0,streak=+localStorage.getItem("es_streak")||1,progress=JSON.parse(localStorage.getItem("es_progress")||"{}"),cards=JSON.parse(localStorage.getItem("es_cards")||"{}"),currentLesson=1,current=0,queue=[],answered=false;
+const SCHEDULE=[0.02,0.08,0.5,1,3,7,14,30,60];
+function cardState(es,de){
+  if(!cards[es]) cards[es]={de,attempts:0,correct:0,streak:0,interval:0.02,ease:2.2,due:Date.now(),lastSeen:0};
+  if(!cards[es].de) cards[es].de=de;
+  return cards[es];
+}
+function updateCard(es,de,good){
+  const c=cardState(es,de), now=Date.now();
+  c.attempts++; if(good)c.correct++; c.lastSeen=now;
+  if(good){
+    c.streak=(c.streak||0)+1;
+    const accuracy=c.correct/c.attempts;
+    c.ease=Math.min(2.8,Math.max(1.5,(c.ease||2.2)+(accuracy>=.8?.08:-.03)));
+    const base=c.interval||0.02;
+    c.interval=Math.min(90, c.streak===1?0.08:base*c.ease);
+  }else{
+    c.streak=0;
+    c.ease=Math.max(1.5,(c.ease||2.2)-.2);
+    c.interval=.02;
+  }
+  c.due=now+c.interval*86400000;
+  cards[es]=c; save();
+}
+function mastery(c){
+  if(!c||!c.attempts)return 0;
+  return Math.min(100,Math.round((c.correct/c.attempts)*70+Math.min(c.streak,5)*6));
+}
+function allWords(){return lessons.flatMap(l=>l.words)}
+function practicePool(){
+  const all=allWords(), now=Date.now();
+  const due=all.filter(([es,de])=>cardState(es,de).due<=now);
+  const weak=all.filter(([es,de])=>{const c=cards[es];return c&&c.due>now&&mastery(c)<65});
+  const fresh=all.filter(([es])=>!cards[es]);
+  return [...due.sort((a,b)=>cardState(a[0],a[1]).due-cardState(b[0],b[1]).due),
+          ...weak.sort((a,b)=>mastery(cardState(a[0],a[1]))-mastery(cardState(b[0],b[1]))),
+          ...fresh].slice(0,12);
+}
+function sessionWords(){
+  const pool=practicePool();
+  return pool.length?pool:allWords().slice(0,8);
+}
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){localStorage.setItem("es_xp",xp);localStorage.setItem("es_streak",streak);localStorage.setItem("es_progress",JSON.stringify(progress));localStorage.setItem("es_cards",JSON.stringify(cards))}
 function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview()}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
-function renderHome(){let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;unlocked=Math.min(unlocked,lessons.length);$("lessons").innerHTML=lessons.map(l=>{let p=progress[l.id]||0,lock=l.id>unlocked;return '<div class="lesson '+(lock?"locked":"")+'"><div class="sectiontitle"><h3>'+l.title+'</h3><span class="tag">'+p+'/'+l.words.length+'</span></div><div class="bar"><i style="width:'+p/l.words.length*100+'%"></i></div><button class="btn '+(lock?"ghost":"")+'" '+(lock?"disabled":"")+' onclick="startLesson('+l.id+')">'+(lock?"🔒 Gesperrt":p?"Fortsetzen":"Starten")+'</button></div>'}).join("");let total=lessons.reduce((a,l)=>a+l.words.length,0),done=Object.values(progress).reduce((a,b)=>a+b,0);let pct=Math.round(done/total*100);$("todayPct").textContent=pct+"%";$("todayBar").style.width=pct+"%";$("todayMsg").textContent=pct>=100?"Tagesziel erreicht! 🎉":done?"Weiter so – du bist auf dem Weg!":"Starte deine erste Lektion."}
-function startLesson(id){currentLesson=id;queue=[...lessons.find(l=>l.id===id).words];current=0;setTab("learn");renderExercise()}
-function renderExercise(){let l=lessons.find(x=>x.id===currentLesson);if(current>=queue.length){progress[l.id]=Math.max(progress[l.id]||0,queue.length);save();$("exercise").innerHTML='<div class="flash"><div class="es">¡Muy bien! 🎉</div><div class="de">Lektion abgeschlossen.</div><button class="btn" onclick="setTab(\'home\')">Zur Übersicht</button></div>';renderHome();return}answered=false;let [es,de]=queue[current];$("counter").textContent=(current+1)+" / "+queue.length;$("lessonTag").textContent="A1 · "+l.title;let opts=[de];while(opts.length<4){let x=queue[Math.floor(Math.random()*queue.length)][1];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);$("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>answer(b,es,de))}
-function answer(btn,es,de){if(answered)return;answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);let c=cards[es]||{box:0,due:0};c.box=good?Math.min(5,c.box+1):0;c.due=Date.now()+([1,2,4,7,14,30][c.box])*86400000;cards[es]=c;save();$("feedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" onclick="next()">Weiter</button>'}
+function renderHome(){
+let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;
+unlocked=Math.min(unlocked,lessons.length);
+$("lessons").innerHTML=lessons.map(l=>{let p=progress[l.id]||0,lock=l.id>unlocked;return '<div class="lesson '+(lock?"locked":"")+'"><div class="sectiontitle"><h3>'+l.title+'</h3><span class="tag">'+(l.level||"A1")+' · '+p+'/'+l.words.length+'</span></div><div class="bar"><i style="width:'+p/l.words.length*100+'%"></i></div><button class="btn '+(lock?"ghost":"")+'" '+(lock?"disabled":"")+' onclick="startLesson('+l.id+')">'+(lock?"🔒 Gesperrt":p?"Fortsetzen":"Starten")+'</button></div>'}).join("");
+let due=dueCards().length, total=lessons.reduce((a,l)=>a+l.words.length,0),done=Object.values(progress).reduce((a,b)=>a+b,0),pct=Math.round(done/total*100);
+$("todayPct").textContent=(daily.minutes?Math.min(100,Math.round(daily.minutes/12*100)):pct)+"%";
+$("todayBar").style.width=Math.min(100,daily.minutes/12*100)+"%";
+$("todayMsg").textContent=due?due+" Wiederholungen warten auf dich.":daily.minutes>=12?"Tagesziel erreicht – lieber morgen mit frischem Abstand weitermachen.":"Die nächste Einheit wird nach deinen Lernfortschritten zusammengestellt.";
+}
+function startLesson(id){
+  currentLesson=id;
+  const base=lessons.find(l=>l.id===id).words;
+  const now=Date.now();
+  const due=base.filter(([es,de])=>cardState(es,de).due<=now);
+  const weak=base.filter(([es,de])=>{const x=cards[es];return x&&x.due>now&&mastery(x)<65});
+  const fresh=base.filter(([es])=>!cards[es]);
+  queue=[...due,...weak,...fresh].slice(0,Math.min(8,base.length));
+  if(!queue.length) queue=base.slice(0,Math.min(8,base.length));
+  current=0;setTab("learn");renderExercise()
+}
+function startAdaptiveSession(){
+  queue=sessionWords();currentLesson=0;current=0;setTab("learn");renderExercise()
+}
+function renderExercise(){
+  let l=lessons.find(x=>x.id===currentLesson);
+  if(current>=queue.length){
+    if(l){progress[l.id]=Math.max(progress[l.id]||0,Math.min(queue.length,l.words.length));save();}
+    $("exercise").innerHTML='<div class="flash"><div class="es">¡Muy bien! 🎉</div><div class="de">Lerneinheit abgeschlossen.</div><p class="small muted">Die nächsten Wiederholungen werden automatisch nach deiner Leistung geplant.</p><button class="btn" onclick="setTab(\'home\')">Zur Übersicht</button></div>';renderHome();return}
+  answered=false;let [es,de]=queue[current];const st=cardState(es,de);$("counter").textContent=(current+1)+" / "+queue.length;$("lessonTag").textContent=(l?((l.level||"A1")+" · "+l.title):"Adaptives Training");let opts=[de];while(opts.length<4){let x=queue[Math.floor(Math.random()*queue.length)][1];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);$("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>answer(b,es,de))}
+function answer(btn,es,de){if(answered)return;answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);updateCard(es,de,good);$("feedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" onclick="next()">Weiter</button>'}
 function next(){current++;renderExercise()}
-function renderReview(){let due=Object.entries(cards).filter(([k,v])=>v.due<=Date.now());$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" onclick="reviewOne()">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
-function reviewOne(){let due=Object.entries(cards).filter(([k,v])=>v.due<=Date.now());if(!due.length)return;let es=due[0][0],all=lessons.flatMap(l=>l.words),de=all.find(x=>x[0]===es)?.[1]||"";let opts=[de];while(opts.length<4){let x=all[Math.floor(Math.random()*all.length)][1];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);$("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{let good=b.textContent===de;b.classList.add(good?"correct":"wrong");if(good){xp+=10;cards[es].box=Math.min(5,(cards[es].box||0)+1);cards[es].due=Date.now()+([1,2,4,7,14,30][cards[es].box])*86400000;save();setTimeout(renderReview,500)}else{cards[es].box=0;cards[es].due=Date.now()+86400000;save();document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===de)x.classList.add("correct")})}})}
+function renderReview(){let due=dueCards();$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" onclick="reviewOne()">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
+function reviewOne(){let due=dueCards();if(!due.length)return;let es=due[0][0],all=allWords(),de=all.find(x=>x[0]===es)?.[1]||cards[es]?.de||"";let opts=[de];while(opts.length<4){let x=all[Math.floor(Math.random()*all.length)][1];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);$("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{let good=b.textContent===de;b.classList.add(good?"correct":"wrong");if(good){xp+=10;updateCard(es,de,true);$("xp").textContent=xp;setTimeout(renderReview,500)}else{updateCard(es,de,false);document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===de)x.classList.add("correct")})}})}
 function startGrammar(){let qs=[["Yo ___ estudiante.","soy",["soy","estoy","es","eres"]],["¿___ está la estación?","Dónde",["Qué","Dónde","Cuándo","Quién"]],["Ella ___ en Madrid.","vive",["vivo","vive","viven","vivimos"]]];let q=qs[Math.floor(Math.random()*qs.length)];$("exercise").innerHTML='<div class="word" style="font-size:25px">'+q[0]+'</div><div class="answers">'+q[2].map(x=>'<button class="answer">'+x+'</button>').join("")+'</div>';setTab("learn");document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{document.querySelectorAll(".answer").forEach(x=>x.disabled=true);b.classList.add(b.textContent===q[1]?"correct":"wrong")})}
 renderHome();
 function speak(t){if("speechSynthesis"in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=.82;speechSynthesis.speak(u)}}
@@ -66,4 +133,5 @@ function recordAttempt(ok){daily.attempts++;if(ok)daily.correct++;daily.minutes=
 function dueCards(){return Object.entries(cards).filter(([k,v])=>v.due<=Date.now()).sort((a,b)=>a[1].due-b[1].due)}
 function choosePractice(){const due=dueCards();if(due.length)return {type:"review",count:due.length};return {type:"new",count:Math.max(0,10-(daily.attempts||0))}}
 function researchSummary(){return '<div class="card"><h2>Warum diese App so lernt</h2><p class="small muted">Die Übungen kombinieren aktives Abrufen, verteilte Wiederholung, Kontext, unmittelbares Feedback und zunehmende Sprachproduktion. Das Ziel ist langfristige Behaltensleistung statt möglichst vieler Punkte.</p></div>'}
+renderHome();
 </script></body></html>
