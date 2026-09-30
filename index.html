@@ -1,44 +1,8 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Spanish Sprint — Learn Spanish</title>
-  <meta name="description" content="A playful Spanish learning app with lessons, flashcards, quizzes and progress tracking.">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="topbar">
-    <div class="brand"><span class="flag">🇪🇸</span><div><strong>Spanish Sprint</strong><small>10 minutes a day</small></div></div>
-    <div class="streak">🔥 <span id="streak">0</span> day streak</div>
-  </header>
-  <main>
-    <section class="hero">
-      <div>
-        <p class="eyebrow">¡Hola! Ready to learn?</p>
-        <h1>Build Spanish that <span>sticks.</span></h1>
-        <p class="hero-copy">Short lessons, useful phrases, quick quizzes, and spaced repetition — all in your browser.</p>
-        <button class="primary" id="startBtn">Start today's lesson →</button>
-      </div>
-      <div class="hero-card"><div class="orb">💬</div><p>Today's phrase</p><h3>¿Qué tal?</h3><span>How's it going?</span></div>
-    </section>
-    <section class="stats">
-      <div><strong id="xp">0</strong><span>XP earned</span></div><div><strong id="lessons">0</strong><span>lessons done</span></div>
-      <div><strong id="accuracy">0%</strong><span>quiz accuracy</span></div><div><strong id="cards">0</strong><span>cards reviewed</span></div>
-    </section>
-    <section class="section" id="learn"><div class="section-head"><div><p class="eyebrow">Choose your path</p><h2>Learn</h2></div></div>
-      <div class="grid">
-        <button class="tile" data-open="lesson"><span class="tile-icon">📚</span><b>Mini lessons</b><small>Greetings, verbs & everyday Spanish</small><span class="arrow">→</span></button>
-        <button class="tile" data-open="cards"><span class="tile-icon">🧠</span><b>Flashcards</b><small>Practice high-frequency vocabulary</small><span class="arrow">→</span></button>
-        <button class="tile" data-open="quiz"><span class="tile-icon">⚡</span><b>Quick quiz</b><small>Test yourself in 60 seconds</small><span class="arrow">→</span></button>
-      </div>
-    </section>
-    <section class="section progress-section"><div class="section-head"><div><p class="eyebrow">Your journey</p><h2>Progress</h2></div><span class="level" id="level">Level 1 · Beginner</span></div>
-      <div class="progress-bar"><div id="progressFill"></div></div><p class="muted"><span id="progressText">0 / 100 XP</span> to the next level</p>
-    </section>
-  </main>
-  <div class="modal hidden" id="modal"><div class="modal-box"><button class="close" id="close">×</button><div id="modalContent"></div></div></div>
-  <footer>Made for consistent practice · Your progress stays on this device</footer>
-  <script src="app.js"></script>
-</body>
-</html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#635bff"><link rel="manifest" href="manifest.json"><title>Español – Spanisch lernen</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}main{max-width:600px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-size:22px;font-weight:800}.stats{display:flex;gap:7px}.pill{background:#fff;border-radius:14px;padding:8px 10px;font-size:13px;box-shadow:0 2px 12px #0000000b}.hero{border-radius:24px;padding:23px;color:#fff;background:linear-gradient(135deg,#635bff,#8e85ff);margin-bottom:15px}.hero h1{margin:0 0 5px;font-size:28px}.hero p{margin:0;opacity:.92}.nav{display:flex;gap:8px;margin-bottom:15px}.nav button{flex:1;border:0;border-radius:14px;padding:12px;background:#e9ebf3;color:#586273;font-weight:750}.nav button.active{background:#172033;color:#fff}.card{background:#fff;border-radius:22px;padding:22px;box-shadow:0 5px 25px #00000009}.label{color:#778194;font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.08em}.progress{height:7px;background:#e8eaf0;border-radius:9px;margin:13px 0 20px;overflow:hidden}.bar{height:100%;width:0;background:#635bff;transition:.25s}.word{font-size:40px;font-weight:850;margin:5px 0}.hint{color:#778194;min-height:25px}.answers{display:grid;gap:10px;margin-top:20px}.answer{min-height:55px;border:2px solid #e7e9ef;border-radius:15px;background:#fff;text-align:left;padding:13px 15px;font-size:16px;font-weight:650;touch-action:manipulation}.answer.correct{border-color:#1b9a67;background:#effaf5}.answer.wrong{border-color:#dc4c64;background:#fff1f3}.answer:disabled{opacity:1}.primary{width:100%;border:0;background:#635bff;color:#fff;padding:15px;border-radius:15px;font-weight:800;font-size:16px;margin-top:16px}.feedback{text-align:center;margin-top:14px}.small{color:#778194;font-size:13px}.row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #eee}.badge{background:#eef0ff;color:#5148d8;padding:6px 9px;border-radius:9px;font-size:12px}.hidden{display:none}.empty{padding:25px 0;text-align:center;color:#778194}
+</style></head><body><main><header><div class="logo">🇪🇸 Español</div><div class="stats"><div class="pill">🔥 <span id="streak">1</span></div><div class="pill">⭐ <span id="xp">0</span></div></div></header><section class="hero"><h1>¡Hola!</h1><p>Deine heutige Spanisch-Session.</p></section><nav class="nav"><button id="learnTab" class="active">Lernen</button><button id="reviewTab">Wiederholen</button></nav><section id="learn"><div class="card"><div class="label">A1 · Vokabeltraining</div><div class="progress"><div id="bar" class="bar"></div></div><div id="lesson"></div></div></section><section id="review" class="hidden"><div class="card"><h2>Deine Wörter</h2><p class="small">Bereits gelernte Wörter.</p><div id="list"></div></div></section></main>
+<script>
+const words=[["hola","Hallo"],["gracias","Danke"],["por favor","Bitte"],["casa","Haus"],["comer","Essen"],["agua","Wasser"],["amigo","Freund"],["¿Cuánto cuesta?","Wie viel kostet das?"],["buenos días","Guten Morgen"],["hasta luego","Bis später"]];let i=0,answered=false,xp=+localStorage.getItem("es_xp")||0,learned=JSON.parse(localStorage.getItem("es_learned")||"[]");const $=id=>document.getElementById(id);$("xp").textContent=xp;function optionsFor(correct){let a=[correct];while(a.length<4){let x=words[Math.floor(Math.random()*words.length)][1];if(!a.includes(x))a.push(x)}return a.sort(()=>Math.random()-.5)}function render(){answered=false;const[es,de]=words[i];$("bar").style.width=(i/words.length*100)+"%";$("lesson").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+optionsFor(de).map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';document.querySelectorAll(".answer").forEach(b=>b.addEventListener("click",()=>answer(b,de)))}function answer(btn,de){if(answered)return;answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);const good=btn.textContent===de;btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;localStorage.setItem("es_xp",xp);$("xp").textContent=xp)}const es=words[i][0];if(!learned.includes(es)){learned.push(es);localStorage.setItem("es_learned",JSON.stringify(learned))}$("feedback").innerHTML='<b>'+(good?"Sehr gut! 🎉":"Fast! 💡")+'</b><div class="small">'+es+" = "+de+'</div><button id="next" class="primary">'+(i===words.length-1?"Session abschließen":"Weiter")+"</button>";$("next").addEventListener("click",next)}function next(){i=(i+1)%words.length;render()}function updateList(){$("list").innerHTML=learned.length?learned.map(es=>{let x=words.find(w=>w[0]===es);return '<div class="row"><span><b>'+x[0]+'</b><br><span class="small">'+x[1]+'</span></span><span class="badge">gelernt</span></div>'}).join(""):'<div class="empty">Noch keine Wörter gelernt.</div>'}$("learnTab").onclick=()=>{$("learn").classList.remove("hidden");$("review").classList.add("hidden");$("learnTab").classList.add("active");$("reviewTab").classList.remove("active")};$("reviewTab").onclick=()=>{$("review").classList.remove("hidden");$("learn").classList.add("hidden");$("reviewTab").classList.add("active");$("learnTab").classList.remove("active");updateList()};render();
+</script></body></html>
