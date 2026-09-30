@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spanish Sprint — Learn Spanish</title>
+  <meta name="description" content="A playful Spanish learning app with lessons, flashcards, quizzes and progress tracking.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="flag">🇪🇸</span><div><strong>Spanish Sprint</strong><small>10 minutes a day</small></div></div>
+    <div class="streak">🔥 <span id="streak">0</span> day streak</div>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">¡Hola! Ready to learn?</p>
+        <h1>Build Spanish that <span>sticks.</span></h1>
+        <p class="hero-copy">Short lessons, useful phrases, quick quizzes, and spaced repetition — all in your browser.</p>
+        <button class="primary" id="startBtn">Start today's lesson →</button>
+      </div>
+      <div class="hero-card"><div class="orb">💬</div><p>Today's phrase</p><h3>¿Qué tal?</h3><span>How's it going?</span></div>
+    </section>
+    <section class="stats">
+      <div><strong id="xp">0</strong><span>XP earned</span></div><div><strong id="lessons">0</strong><span>lessons done</span></div>
+      <div><strong id="accuracy">0%</strong><span>quiz accuracy</span></div><div><strong id="cards">0</strong><span>cards reviewed</span></div>
+    </section>
+    <section class="section" id="learn"><div class="section-head"><div><p class="eyebrow">Choose your path</p><h2>Learn</h2></div></div>
+      <div class="grid">
+        <button class="tile" data-open="lesson"><span class="tile-icon">📚</span><b>Mini lessons</b><small>Greetings, verbs & everyday Spanish</small><span class="arrow">→</span></button>
+        <button class="tile" data-open="cards"><span class="tile-icon">🧠</span><b>Flashcards</b><small>Practice high-frequency vocabulary</small><span class="arrow">→</span></button>
+        <button class="tile" data-open="quiz"><span class="tile-icon">⚡</span><b>Quick quiz</b><small>Test yourself in 60 seconds</small><span class="arrow">→</span></button>
+      </div>
+    </section>
+    <section class="section progress-section"><div class="section-head"><div><p class="eyebrow">Your journey</p><h2>Progress</h2></div><span class="level" id="level">Level 1 · Beginner</span></div>
+      <div class="progress-bar"><div id="progressFill"></div></div><p class="muted"><span id="progressText">0 / 100 XP</span> to the next level</p>
+    </section>
+  </main>
+  <div class="modal hidden" id="modal"><div class="modal-box"><button class="close" id="close">×</button><div id="modalContent"></div></div></div>
+  <footer>Made for consistent practice · Your progress stays on this device</footer>
+  <script src="app.js"></script>
+</body>
+</html>
