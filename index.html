@@ -105,7 +105,7 @@ function renderExercise(){
   let l=lessons.find(x=>x.id===currentLesson);
   if(current>=queue.length){
     if(l){progress[l.id]=Math.max(progress[l.id]||0,Math.min(queue.length,l.words.length));save();}
-    $("exercise").innerHTML='<div class="flash"><div class="es">¡Muy bien! 🎉</div><div class="de">Lerneinheit abgeschlossen.</div><p class="small muted">Die nächsten Wiederholungen werden automatisch nach deiner Leistung geplant.</p><button class="btn" onclick="setTab(\\'home\\')">Zur Übersicht</button></div>';renderHome();return
+    $("exercise").innerHTML='<div class="flash"><div class="es">¡Muy bien! 🎉</div><div class="de">Lerneinheit abgeschlossen.</div><p class="small muted">Die nächsten Wiederholungen werden automatisch nach deiner Leistung geplant.</p><button class="btn" onclick="setTab(&quot;home&quot;)">Zur Übersicht</button></div>';renderHome();return
   }
   answered=false;
   let [es,de]=queue[current];
@@ -124,7 +124,7 @@ function renderExercise(){
     document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>answer(b,es,de))
   }
 }
-function checkRecall(es,de){
+function checkRecall(){const [es,de]=queue[qIndex];
   if(answered)return;
   answered=true;
   const input=$("recallInput"),good=normalize(input.value)===normalize(es);
