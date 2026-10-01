@@ -120,6 +120,7 @@ function handleDelegatedAction(ev){
 document.addEventListener("click",handleDelegatedAction,true);
 document.addEventListener("pointerup",handleDelegatedAction,true);
 document.addEventListener("touchend",handleDelegatedAction,true);
+document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll("[data-action]").forEach(function(el){el.style.webkitTapHighlightColor="transparent"});});
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){store.setItem("es_xp",xp);store.setItem("es_streak",streak);store.setItem("es_progress",JSON.stringify(progress));store.setItem("es_cards",JSON.stringify(cards))}
 function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer();if(id==="read")renderReading();if(id==="write")renderWriting();if(id==="progress")renderProgress();if(id==="diagnostic")renderDiagnostic()}
@@ -159,7 +160,18 @@ function startLesson(id){
   if(!queue.length)queue=base.slice(0,Math.min(8,base.length));
   current=0;setTab("learn");renderExercise();
 }
-function startAdaptiveSession(){queue=sessionWords();currentLesson=null;current=0;setTab("learn");renderExercise()}
+function startAdaptiveSession(){
+ try{
+  const words=sessionWords();
+  if(!words||!words.length) throw new Error("Keine Lerninhalte verfügbar.");
+  queue=words;currentLesson=null;current=0;answered=false;
+  setTab("learn");renderExercise();
+ }catch(err){
+  console.error("startAdaptiveSession:",err);
+  const box=$("exercise");
+  if(box)box.innerHTML='<div class="flash"><div class="es">⚠️</div><div class="de">Die Einheit konnte nicht gestartet werden.</div><p class="small muted">Bitte Seite neu laden.</p></div>';
+ }
+}
 function normalize(s){return s.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[¿?¡!.,]/g,"").replace(/\s+/g," ")}
 function renderExercise(){
   const l=lessons.find(x=>x.id===currentLesson);
