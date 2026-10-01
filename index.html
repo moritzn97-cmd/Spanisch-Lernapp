@@ -402,13 +402,22 @@ const writeItems=[
 ];
 function renderWriting(){
  const x=writeItems[writeIndex%writeItems.length];
- $("writeBody").innerHTML='<div class="tag">Produktion · '+(writeIndex+1)+'/'+writeItems.length+'</div><div class="flash"><div class="de">'+x[0]+'</div></div><input id="writeInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch formulieren"><button class="btn" onclick="finishWriting()">Antwort prüfen</button><div id="writeFeedback" class="feedback"></div>';
- $("writeInput").onkeydown=e=>{if(e.key==="Enter")finishWriting()};
+ $("writeBody").innerHTML='<div class="tag">Produktion · '+(writeIndex+1)+'/'+writeItems.length+'</div><div class="flash"><div class="de">'+x[0]+'</div></div><input id="writeInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch formulieren"><button class="btn" id="writeCheckBtn" type="button">Antwort prüfen</button><div id="writeFeedback" class="feedback"></div>';
+ $("writeCheckBtn").onclick=finishWriting;
+ $("writeInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();finishWriting(e)}};
 }
-function finishWriting(){
- const x=writeItems[writeIndex%writeItems.length],value=$("writeInput").value,good=normalize(value)===normalize(x[1]);
- $("writeInput").disabled=true;recordAttempt(good);if(good){xp+=18;$("xp").textContent=xp}save();
- $("writeFeedback").innerHTML='<b>'+(good?"Sehr gut! ✍️":"Vergleiche mit der Referenz und versuche es erneut.")+'</b><div class="small">Referenz: '+x[1]+'</div><button class="btn" onclick="writeIndex++;renderWriting()">Weiter</button>';
+function finishWriting(ev){
+ if(ev)ev.preventDefault();
+ const input=$("writeInput");
+ if(!input)return;
+ const x=writeItems[writeIndex%writeItems.length],value=input.value.trim(),good=normalize(value)===normalize(x[1]);
+ input.disabled=true;
+ const btn=document.querySelector("#writeBody button[onclick^="finishWriting"]");
+ if(btn)btn.disabled=true;
+ recordAttempt(good);if(!good)recordError("writing","satz",x[0],"");
+ if(good){xp+=18;$("xp").textContent=xp}save();
+ $("writeFeedback").innerHTML='<b>'+(good?"Sehr gut! ✍️":"Vergleiche mit der Referenz und versuche es erneut.")+'</b><div class="small">Referenz: '+x[1]+'</div><button class="btn" id="writeNext">Weiter</button>';
+ const next=$("writeNext");if(next)next.onclick=()=>{writeIndex++;renderWriting()};
 }
 function renderDiagnostic(){
  const qs=[
