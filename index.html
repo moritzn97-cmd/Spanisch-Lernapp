@@ -345,7 +345,9 @@ function dialogQuestion(){
 function finishDialog(btn,i){
   const d=dialogueItems[dialogIndex%dialogueItems.length],good=i===d.correct;
   document.querySelectorAll("#dialogBody .answer").forEach(b=>b.disabled=true);btn.classList.add(good?"correct":"wrong");
+  recordAttempt(good);if(!good)recordError("dialog","verständnis",d.title,"");
   if(good){xp+=15;$("xp").textContent=xp}
+  save();
   $("dialogFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button class="btn" onclick="dialogIndex++;startDialogTrainer()">Nächsten Dialog</button>';
 }
 
