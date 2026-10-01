@@ -95,11 +95,11 @@ function dispatchAppAction(el,ev){
   case "speakText":speakText(n.text||"",Number(n.rate)||.82);break;case "answer":answer(el);break;case "reviewAnswer":reviewAnswer(el);break;case "grammarAnswer":grammarAnswer(el);break;case "checkRecall":checkRecall(ev);break;
   case "checkSentence":checkSentence(n.expected||el.dataset.expected);break;case "answerListening":answerListening(el,Number(n.index));break;
   case "finishDialog":finishDialog(el,Number(n.index));break;case "finishReading":finishReading(el,Number(n.index));break;
-  case "diagnosticChoose":diagnosticChoose(el,Number(n.index));break;case "nextDialog":dialogIndex++;startDialogTrainer();break;
+  case "diagnosticChoose":diagnosticChoose(el,Number(n.index));break;case "diagnosticNext":diagnosticNext();break;case "nextDialog":dialogIndex++;startDialogTrainer();break;
   case "nextReading":readIndex++;renderReading();break;case "nextDiagnostic":diagnosticIndex++;renderDiagnostic();break;
   case "next":next();break;case "nextWriting":writeIndex++;renderWriting();break;case "nextListening":nextListening();break;case "nextSpeaking":nextSpeaking();break;
   case "startAdaptiveSession":startAdaptiveSession();break;case "startGrammar":startGrammar();break;case "startSentence":startSentence();break;
-  case "startDialogue":startDialogue();break;case "startRecognition":startRecognition();break;case "showSpeakingAnswer":showSpeakingAnswer();break;
+  case "startDialogue":startDialogue();break;case "dialogQuestion":dialogQuestion();break;case "startRecognition":startRecognition();break;case "showSpeakingAnswer":showSpeakingAnswer();break;
   case "renderReview":renderReview();break;case "reviewOne":reviewOne();break;case "renderDiagnostic":renderDiagnostic();break;
   case "resetProgress":resetProgress();break;case "finishWriting":finishWriting(ev);break;default:return false;
  }
