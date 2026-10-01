@@ -365,7 +365,8 @@ function finishDialog(btn,i){
 
 // Research-based learning engine
 const LEARN_MINUTES=12;
-const todayKey=new Date().toISOString().slice(0,10);
+function localDateKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+const todayKey=localDateKey();
 let daily=JSON.parse(store.getItem("es_daily")||"{}");
 if(daily.date!==todayKey) daily={date:todayKey,minutes:0,correct:0,attempts:0};
 function recordAttempt(ok){daily.attempts++;if(ok)daily.correct++;daily.minutes=Math.min(LEARN_MINUTES,daily.minutes+0.6);store.setItem("es_daily",JSON.stringify(daily))}
