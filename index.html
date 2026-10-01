@@ -9,11 +9,12 @@
 <body><main>
 <header class="top"><div class="logo">🇪🇸 Español</div><div class="stats"><span class="pill">🔥 <b id="streak">1</b></span><span class="pill">⭐ <b id="xp">0</b></span></div></header>
 <section class="hero"><h1>¡Hola!</h1><p id="heroText">Dein Spanisch-Training für heute.</p></section>
-<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button></nav>
+<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="speak">🗣️ Sprechen</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button></nav>
 
 <section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card" id="adaptiveInfo"><div class="sectiontitle"><h2>Dein Lernplan</h2><span class="tag">adaptiv</span></div><p class="small muted">Die App priorisiert fällige und unsichere Wörter. Neue Inhalte werden mit Wiederholung gemischt, statt einfach möglichst viel Stoff auf einmal zu zeigen.</p></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: ca. 12 Minuten mit aktivem Abrufen und Wiederholen.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lerneinheit.</p><button class="btn" onclick="startAdaptiveSession()">▶ Empfohlene Einheit starten</button></div></section>
 
 <section id="learn" class="tab hidden"><div class="card"><div class="sectiontitle"><span class="tag" id="lessonTag">A1</span><span class="small muted" id="counter"></span></div><div id="exercise"></div></div></section>
+<section id="speak" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>🗣️ Sprechtraining</h2><span class="tag">Produktion</span></div><p class="muted small">Sprich den spanischen Satz laut. Die App versucht deine Antwort zu erkennen und zeigt dir anschließend die Referenzlösung.</p><div id="speakBody"></div></div></section>
 <section id="listen" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>🎧 Hörverständnis</h2><span class="tag">A1–B1</span></div><p class="muted small">Höre zuerst ohne mitzulesen und entscheide dann, was du verstanden hast.</p><div id="listenBody"></div></div></section>
 <section id="dialog" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>💬 Dialogtrainer</h2><span class="tag">Alltag</span></div><p class="muted small">Kurze Situationen mit natürlicher Sprache. Höre, verstehe und wähle eine passende Antwort.</p><div id="dialogBody"></div></div></section>
 <section id="review" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Spaced Repetition</h2><span class="tag" id="dueCount">0 fällig</span></div><p class="muted small">Wörter werden wiederholt, bevor du sie vergisst.</p><div id="reviewBody"></div></div></section>
@@ -70,7 +71,7 @@ function sessionWords(){
 }
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){localStorage.setItem("es_xp",xp);localStorage.setItem("es_streak",streak);localStorage.setItem("es_progress",JSON.stringify(progress));localStorage.setItem("es_cards",JSON.stringify(cards))}
-function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="dialog")startDialogTrainer()}
+function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer()}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 function renderHome(){
 let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;
@@ -154,6 +155,55 @@ const dialogues=[
 ];
 function startDialogue(){const d=dialogues[Math.floor(Math.random()*dialogues.length)];$("exercise").innerHTML='<div class="tag">Dialog · '+d[0]+'</div><div style="white-space:pre-line;line-height:1.65;margin-top:15px;font-size:16px">'+d[1]+'</div><div class="sound"><button onclick="speak('+JSON.stringify(d[1])+')">🔊 Dialog anhören</button></div><button class="btn" onclick="startDialogue()">Nächsten Dialog</button>';setTab("learn")}
 
+
+
+// Speaking practice with browser speech recognition when available
+const speakingItems=[
+ {de:"Hallo, wie geht es dir?",es:"Hola, ¿cómo estás?"},
+ {de:"Ich heiße Moritz.",es:"Me llamo Moritz."},
+ {de:"Ich studiere Wirtschaftswissenschaften.",es:"Estudio ciencias económicas."},
+ {de:"Wo ist der Bahnhof?",es:"¿Dónde está la estación?"},
+ {de:"Ich hätte gern einen Kaffee.",es:"Quisiera un café."},
+ {de:"Ich wohne in Deutschland.",es:"Vivo en Alemania."},
+ {de:"Wie viel kostet das?",es:"¿Cuánto cuesta?",}
+];
+let speakingIndex=0,recognition=null,speakingActive=false;
+function startSpeaking(){
+ const x=speakingItems[speakingIndex%speakingItems.length];
+ const supported=("SpeechRecognition"in window)||("webkitSpeechRecognition"in window);
+ $("speakBody").innerHTML='<div class="tag">Satz '+(speakingIndex+1)+'/'+speakingItems.length+'</div><div class="flash"><div class="de">'+x.de+'</div><div class="es" style="font-size:24px">Sprich den spanischen Satz.</div><button class="btn ghost" onclick="speakText('+JSON.stringify(x.es)+',.78)">🔊 Referenz anhören</button></div><div id="speechStatus" class="feedback muted small">'+(supported?"Bereit zur Aufnahme.":"Dein Browser unterstützt hier keine Spracherkennung – nutze Selbstvergleich.")+'</div><button class="btn" onclick="startRecognition()">🎙️ Sprechen</button><button class="btn ghost" onclick="showSpeakingAnswer()">Antwort anzeigen</button><div id="speechResult" class="feedback"></div>';
+}
+function startRecognition(){
+ const API=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!API){showSpeakingAnswer();return}
+ if(recognition){try{recognition.stop()}catch(e){}}
+ recognition=new API();recognition.lang="es-ES";recognition.interimResults=false;recognition.maxAlternatives=3;
+ speakingActive=true;$("speechStatus").textContent="🎙️ Ich höre zu …";
+ recognition.onresult=e=>{
+   speakingActive=false;
+   const heard=e.results[0][0].transcript;
+   evaluateSpeech(heard);
+ };
+ recognition.onerror=()=>{speakingActive=false;$("speechStatus").textContent="Keine Spracherkennung verfügbar. Vergleiche deine Aussprache mit der Referenz.";};
+ recognition.onend=()=>{if(speakingActive)$("speechStatus").textContent="Tippe erneut auf Sprechen."};
+ recognition.start();
+}
+function evaluateSpeech(heard){
+ const x=speakingItems[speakingIndex%speakingItems.length];
+ const a=normalize(heard),b=normalize(x.es);
+ const wordsA=a.split(" "),wordsB=b.split(" ");
+ const overlap=wordsB.filter(w=>wordsA.includes(w)).length/Math.max(wordsB.length,1);
+ const good=a===b||overlap>=.75;
+ if(good){xp+=20;$("xp").textContent=xp}
+ $("speechStatus").textContent=good?"Gut erkannt!":"Noch einmal versuchen.";
+ $("speechResult").innerHTML='<div class="small">Erkannt: <b>'+heard+'</b></div><div class="small">Referenz: <b>'+x.es+'</b></div><div class="small muted">Hinweis: Die Browser-Erkennung ist nur ein grober Vergleich und keine zuverlässige Aussprachebewertung.</div><button class="btn" onclick="nextSpeaking()">Nächster Satz</button>';
+ save();
+}
+function showSpeakingAnswer(){
+ const x=speakingItems[speakingIndex%speakingItems.length];
+ $("speechResult").innerHTML='<div class="small">Referenz: <b>'+x.es+'</b></div><p class="small muted">Sprich den Satz jetzt noch einmal laut und vergleiche Rhythmus und Aussprache.</p><button class="btn" onclick="nextSpeaking()">Nächster Satz</button>';
+}
+function nextSpeaking(){speakingIndex++;startSpeaking()}
 
 // Listening + dialog training
 const listeningItems=[
