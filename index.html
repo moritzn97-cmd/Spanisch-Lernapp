@@ -127,7 +127,7 @@ function startLesson(id){
   if(!queue.length)queue=base.slice(0,Math.min(8,base.length));
   current=0;setTab("learn");renderExercise();
 }
-function startAdaptiveSession(){queue=sessionWords();currentLesson=0;current=0;setTab("learn");renderExercise()}
+function startAdaptiveSession(){queue=sessionWords();currentLesson=null;current=0;setTab("learn");renderExercise()}
 function normalize(s){return s.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[¿?¡!.,]/g,"").replace(/\s+/g," ")}
 function renderExercise(){
   const l=lessons.find(x=>x.id===currentLesson);
