@@ -166,7 +166,20 @@ function checkRecall(){const [es,de]=queue[current];
 function answer(btn,es,de){if(answered)return;answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);updateCard(es,de,good);$("feedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" onclick="next()">Weiter</button>'}
 function next(){current++;renderExercise()}
 function renderReview(){let due=dueCards();$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" onclick="reviewOne()">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
-function reviewOne(){answered=false;let due=dueCards();if(!due.length)return;let es=due[0][0],all=allWords(),de=all.find(x=>x[0]===es)?.[1]||cards[es]?.de||"";let opts=[de];while(opts.length<4){let x=all[Math.floor(Math.random()*all.length)][1];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);$("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{if(answered)return;answered=true;document.querySelectorAll(".answer").forEach(x=>x.disabled=true);let good=b.textContent===de;b.classList.add(good?"correct":"wrong");if(good){xp+=10;updateCard(es,de,true);$("xp").textContent=xp;setTimeout(renderReview,500)}else{updateCard(es,de,false);document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===de)x.classList.add("correct")})}})}
+function reviewOne(){
+  answered=false;let due=dueCards();if(!due.length){renderReview();return;}
+  let es=due[0][0],all=allWords(),de=all.find(x=>x[0]===es)?.[1]||cards[es]?.de||"";
+  let opts=[de];while(opts.length<4){let x=all[Math.floor(Math.random()*all.length)][1];if(!opts.includes(x))opts.push(x)}
+  opts.sort(()=>Math.random()-.5);
+  $("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="reviewFeedback" class="feedback"></div>';
+  document.querySelectorAll("#reviewBody .answer").forEach(b=>b.onclick=()=>{
+    if(answered)return;answered=true;document.querySelectorAll("#reviewBody .answer").forEach(x=>x.disabled=true);
+    let good=b.textContent===de;recordAttempt(good);b.classList.add(good?"correct":"wrong");
+    if(!good)document.querySelectorAll("#reviewBody .answer").forEach(x=>{if(x.textContent===de)x.classList.add("correct")});
+    updateCard(es,de,good);if(good){xp+=10;$("xp").textContent=xp}
+    $("reviewFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Nicht ganz.")+'</b><div class="small">Lösung: '+de+'</div><button class="btn" onclick="renderReview()">Weiter</button>';
+  });
+}
 function startGrammar(){
  answered=false;
  const qs=[
