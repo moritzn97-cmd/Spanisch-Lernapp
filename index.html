@@ -199,7 +199,7 @@ function reviewOne(){
   let es=due[0][0],all=allWords(),de=all.find(x=>x[0]===es)?.[1]||cards[es]?.de||"";
   let opts=[de];while(opts.length<4){let x=all[Math.floor(Math.random()*all.length)][1];if(!opts.includes(x))opts.push(x)}
   opts.sort(()=>Math.random()-.5);
-  $("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="reviewFeedback" class="feedback"></div>';
+  $("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" data-action="reviewAnswer" data-answer="'+x+'">'+x+'</button>').join("")+'</div><div id="reviewFeedback" class="feedback"></div>';
 
 }
 function startGrammar(){
@@ -218,8 +218,8 @@ function startGrammar(){
  ["B2 · estilo","Aunque ___ cansado, continuó.","estaba",["estuvo","estaba","estará","esté"]],
  ["B2 · concesión","A pesar de que ___ difícil, lo consiguió.","era",["es","fue","era","será"]]
  ];
- const q=qs[Math.floor(Math.random()*qs.length)];window.__grammarAnswer=q[2];window.__grammarTopic=q[0];
- $("exercise").innerHTML='<div class="tag">'+q[0]+'</div><div class="word" style="font-size:25px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';
+ const q=qs[Math.floor(Math.random()*qs.length)];window.__grammarAnswer=q[2];window.__grammarTopic=q[0];window.__grammarAnswer=q[2];window.__grammarTopic=q[0];
+ $("exercise").innerHTML='<div class="tag">'+q[0]+'</div><div class="word" style="font-size:25px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button type="button" class="answer" data-action="grammarAnswer" data-answer="'+x+'">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';
  setTab("learn");
 ;
 }
