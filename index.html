@@ -169,13 +169,13 @@ function renderExercise(){
   $("counter").textContent=(current+1)+" / "+queue.length;
   $("lessonTag").textContent=l?((l.level||"A1")+" · "+l.title):"Adaptives Training";
   if(recall){
-    $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn" type="button" data-action="checkRecall">Antwort prüfen</button><div id="feedback" class="feedback"></div>';
+    $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn" type="button" data-action="checkRecall">Antwort prüfen</button><div id="recallFeedback" class="feedback"></div>';
     $("recallInput").focus();
     $("recallInput").addEventListener("keydown",ev=>{if(ev.key==="Enter")checkRecall()});
   }else{
     let opts=[de];while(opts.length<4){const x=queue[Math.floor(Math.random()*queue.length)][1];if(!opts.includes(x))opts.push(x)}
     opts.sort(()=>Math.random()-.5);
-    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" data-action="answer"&#39;")+'\',\''+x.replace(/'/g,"&#39;")+'\')">'+x+'</button>').join("")+'</div><div id="exerciseFeedback" class="feedback"></div>';
+    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" data-action="answer" data-es="'+es.replace(/"/g,"&quot;")+'" data-de="'+x.replace(/"/g,"&quot;")+'">'+x+'</button>').join("")+'</div><div id="exerciseFeedback" class="feedback"></div>';
     
   }
 }
@@ -191,7 +191,7 @@ function checkRecall(ev){
   if(good){xp+=15;$("xp").textContent=xp}
   $("recallFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Fast – noch einmal abrufen.")+'</b><div class="small">Gesucht: '+es+' = '+de+'</div><button class="btn" data-action="next">Weiter</button>';
 }
-function answer(btn,es,de){if(answered)return;if(es==null||de==null){const item=queue[current];if(!item)return;es=item[0];de=item[1];}answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}if(currentLesson!=null)progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);updateCard(es,de,good);$("recallFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" data-action="next">Weiter</button>'}
+function answer(btn,es,de){if(answered)return;if(es=btn.dataset.es||es;de=btn.dataset.de||de;if(es==null||de==null){const item=queue[current];if(!item)return;es=item[0];de=item[1];}answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}if(currentLesson!=null)progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);updateCard(es,de,good);$("exerciseFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" data-action="next">Weiter</button>'}
 function next(){current++;renderExercise()}
 function renderReview(){let due=dueCards();$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" data-action="reviewOne">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
 function reviewOne(){
@@ -218,8 +218,8 @@ function startGrammar(){
  ["B2 · estilo","Aunque ___ cansado, continuó.","estaba",["estuvo","estaba","estará","esté"]],
  ["B2 · concesión","A pesar de que ___ difícil, lo consiguió.","era",["es","fue","era","será"]]
  ];
- const q=qs[Math.floor(Math.random()*qs.length)];window.__grammarAnswer=q[2];window.__grammarTopic=q[0];window.__grammarAnswer=q[2];window.__grammarTopic=q[0];
- $("exercise").innerHTML='<div class="tag">'+q[0]+'</div><div class="word" style="font-size:25px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button type="button" class="answer" data-action="grammarAnswer" data-answer="'+x+'">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';
+ const q=qs[Math.floor(Math.random()*qs.length)];window.__grammarAnswer=q[2];window.__grammarTopic=q[0];
+ $("exercise").innerHTML='<div class="tag">'+q[0]+'</div><div class="word" style="font-size:25px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button type="button" class="answer" data-action="grammarAnswer" data-answer="'+x+'">'+x+'</button>').join("")+'</div><div id="grammarFeedback" class="feedback"></div>';
  setTab("learn");
 ;
 }
