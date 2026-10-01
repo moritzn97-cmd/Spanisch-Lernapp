@@ -196,7 +196,26 @@ function checkRecall(ev){
   if(good){xp+=15;$("xp").textContent=xp}
   $("recallFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Fast – noch einmal abrufen.")+'</b><div class="small">Gesucht: '+es+' = '+de+'</div><button class="btn" data-action="next">Weiter</button>';
 }
-function answer(btn,es,de){if(answered)return;if(es=btn.dataset.es||es;de=btn.dataset.de||de;if(es==null||de==null){const item=queue[current];if(!item)return;es=item[0];de=item[1];}answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}if(currentLesson!=null)progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);updateCard(es,de,good);$("exerciseFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" data-action="next">Weiter</button>'}
+function answer(btn,es,de){
+ if(answered)return;
+ es=btn.dataset.es||es;
+ de=btn.dataset.de||de;
+ if(es==null||de==null){
+   const item=queue[current];
+   if(!item)return;
+   es=item[0];de=item[1];
+ }
+ answered=true;
+ document.querySelectorAll(".answer").forEach(b=>b.disabled=true);
+ const good=btn.textContent===de;
+ recordAttempt(good);
+ btn.classList.add(good?"correct":"wrong");
+ if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});
+ if(good){xp+=10;$("xp").textContent=xp}
+ if(currentLesson!=null)progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);
+ updateCard(es,de,good);
+ $("exerciseFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" data-action="next">Weiter</button>';
+}
 function next(){current++;renderExercise()}
 function renderReview(){let due=dueCards();$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" data-action="reviewOne">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
 function reviewOne(){
