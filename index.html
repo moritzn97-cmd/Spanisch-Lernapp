@@ -416,7 +416,7 @@ function finishWriting(ev){
  if(!input)return;
  const x=writeItems[writeIndex%writeItems.length],value=input.value.trim(),good=normalize(value)===normalize(x[1]);
  input.disabled=true;
- const btn=document.querySelector("#writeBody button[onclick^="finishWriting"]");
+ const btn=document.querySelector("#writeCheckBtn");
  if(btn)btn.disabled=true;
  recordAttempt(good);if(!good)recordError("writing","satz",x[0],"");
  if(good){xp+=18;$("xp").textContent=xp}save();
