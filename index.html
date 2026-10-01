@@ -433,7 +433,7 @@ function renderDiagnostic(){
  let i=0,score=0;
  function draw(){
   const q=qs[i];
-  $("diagnosticBody").innerHTML='<div class="tag">Frage '+(i+1)+'/'+qs.length+' · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="diagnosticFeedback" class="feedback"></div>';
+  $("diagnosticBody").innerHTML='<div class="tag">Frage '+(i+1)+'/'+qs.length+' · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="answers">'+q[3].map((x,j)=>'<button type="button" class="answer" onclick="diagnosticChoose(this,'+j+')">'+x+'</button>').join("")+'</div><div id="diagnosticFeedback" class="feedback"></div>';
   document.querySelectorAll("#diagnosticBody .answer").forEach(b=>b.onclick=()=>{
    document.querySelectorAll("#diagnosticBody .answer").forEach(x=>x.disabled=true);
    const good=b.textContent===q[2];if(good)score++;b.classList.add(good?"correct":"wrong");
@@ -441,7 +441,8 @@ function renderDiagnostic(){
    $("diagnosticFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button class="btn" onclick="diagnosticNext()">Weiter</button>';
   });
  }
- window.diagnosticNext=function(){i++;if(i<qs.length){draw();return}const level=score<=3?"A1":score<=6?"A2":score<=9?"B1":"B2";store.setItem("es_level",level);$("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Ergebnis</div><div class="word">'+level+'</div><p class="small muted">'+score+' von '+qs.length+' richtig. Grobe Lern-Einstufung, kein standardisierter CEFR-Test.</p><button class="btn" onclick="renderDiagnostic()">Einstufung wiederholen</button></div>'};
+ window.diagnosticChoose=function(btn,j){const q=qs[i];document.querySelectorAll("#diagnosticBody .answer").forEach(b=>b.disabled=true);const good=j===q[3].indexOf(q[2]);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(b=>{if(b.textContent===q[2])b.classList.add("correct")});if(good)score++;$("diagnosticFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button type="button" class="btn" onclick="diagnosticNext()">Weiter</button>};
+window.diagnosticNext=function(){i++;if(i<qs.length){draw();return}const level=score<=3?"A1":score<=6?"A2":score<=9?"B1":"B2";store.setItem("es_level",level);$("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Ergebnis</div><div class="word">'+level+'</div><p class="small muted">'+score+' von '+qs.length+' richtig. Grobe Lern-Einstufung, kein standardisierter CEFR-Test.</p><button class="btn" onclick="renderDiagnostic()">Einstufung wiederholen</button></div>'};
  draw();
 }
 function renderProgress(){renderErrorProfile();
