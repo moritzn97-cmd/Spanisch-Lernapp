@@ -410,6 +410,35 @@ function finishWriting(){
  $("writeInput").disabled=true;recordAttempt(good);if(good){xp+=18;$("xp").textContent=xp}save();
  $("writeFeedback").innerHTML='<b>'+(good?"Sehr gut! ✍️":"Vergleiche mit der Referenz und versuche es erneut.")+'</b><div class="small">Referenz: '+x[1]+'</div><button class="btn" onclick="writeIndex++;renderWriting()">Weiter</button>';
 }
+function renderDiagnostic(){
+ const qs=[
+  ["A1","Yo ___ estudiante.","soy",["soy","estoy","es","eres"]],
+  ["A1","¿Dónde ___ la estación?","está",["está","es","son","hay"]],
+  ["A1","Me ___ Moritz.","llamo",["llamo","llamas","llama","llamé"]],
+  ["A2","Ayer ___ al cine.","fui",["fui","voy","iba","iré"]],
+  ["A2","Cuando era niño, ___ mucho.","jugaba",["jugaba","jugué","juego","jugaré"]],
+  ["A2","Quisiera ___ café.","un",["un","una","unos","unas"]],
+  ["B1","Si tuviera tiempo, ___ más.","viajaría",["viajaría","viajo","viajé","viajaré"]],
+  ["B1","Es importante que ___ a tiempo.","llegues",["llegues","llegas","llegaste","llegarás"]],
+  ["B1","No fui ___ estaba enfermo.","porque",["porque","aunque","por eso","sin embargo"]],
+  ["B2","Es posible que ___ mañana.","llueva",["llueva","llueve","llovió","lloverá"]],
+  ["B2","Aunque ___ cansado, continuó.","estaba",["estaba","estuvo","estará","esté"]],
+  ["B2","A pesar de que ___ difícil, lo consiguió.","era",["era","es","fue","será"]]
+ ];
+ let i=0,score=0;
+ function draw(){
+  const q=qs[i];
+  $("diagnosticBody").innerHTML='<div class="tag">Frage '+(i+1)+'/'+qs.length+' · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="diagnosticFeedback" class="feedback"></div>';
+  document.querySelectorAll("#diagnosticBody .answer").forEach(b=>b.onclick=()=>{
+   document.querySelectorAll("#diagnosticBody .answer").forEach(x=>x.disabled=true);
+   const good=b.textContent===q[2];if(good)score++;b.classList.add(good?"correct":"wrong");
+   if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(x=>{if(x.textContent===q[2])x.classList.add("correct")});
+   $("diagnosticFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button class="btn" onclick="diagnosticNext()">Weiter</button>';
+  });
+ }
+ window.diagnosticNext=function(){i++;if(i<qs.length){draw();return}const level=score<=3?"A1":score<=6?"A2":score<=9?"B1":"B2";store.setItem("es_level",level);$("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Ergebnis</div><div class="word">'+level+'</div><p class="small muted">'+score+' von '+qs.length+' richtig. Grobe Lern-Einstufung, kein standardisierter CEFR-Test.</p><button class="btn" onclick="renderDiagnostic()">Einstufung wiederholen</button></div>'};
+ draw();
+}
 function renderProgress(){renderErrorProfile();
  const all=lessons.flatMap(l=>l.words),seen=all.filter(([es])=>cards[es]),mastered=seen.filter(([es])=>mastery(cards[es])>=75);
  const acc=daily.attempts?Math.round(daily.correct/daily.attempts*100):0;
