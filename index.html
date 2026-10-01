@@ -105,16 +105,21 @@ function dispatchAppAction(el,ev){
  }
  return true;
 }
-document.addEventListener("click",function(ev){
- const target=ev.target.closest("button,[role='button'],a");if(!target)return;
- let handled=dispatchAppAction(target,ev);
- if(!handled && target.matches("#reviewBody .answer")){target.click();handled=true;}
- else if(!handled && target.matches("#learn .answer") && typeof window.__grammarAnswer!=="undefined"){target.click();handled=true;}
- else if(!handled && target.id==="solutionAudio"){speak(target.dataset.text||"");handled=true;}
- else if(!handled && target.id==="homeBtn"){setTab("home");handled=true;}
- else if(!handled && target.id==="writeNext"){writeIndex++;renderWriting();handled=true;}
- if(handled){ev.preventDefault();ev.stopImmediatePropagation();}
-},true);
+let lastDelegatedActionAt=0,lastDelegatedActionTarget=null;
+function handleDelegatedAction(ev){
+ const raw=ev.target;
+ const target=raw && raw.nodeType===1 ? raw.closest("button,[role='button'],a") : raw && raw.parentElement ? raw.parentElement.closest("button,[role='button'],a") : null;
+ if(!target)return false;
+ const now=Date.now();
+ if(now-lastDelegatedActionAt<350 && lastDelegatedActionTarget===target)return true;
+ const handled=dispatchAppAction(target,ev);
+ if(!handled)return false;
+ lastDelegatedActionAt=now;lastDelegatedActionTarget=target;
+ ev.preventDefault();ev.stopImmediatePropagation();return true;
+}
+document.addEventListener("click",handleDelegatedAction,true);
+document.addEventListener("pointerup",handleDelegatedAction,true);
+document.addEventListener("touchend",handleDelegatedAction,true);
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){store.setItem("es_xp",xp);store.setItem("es_streak",streak);store.setItem("es_progress",JSON.stringify(progress));store.setItem("es_cards",JSON.stringify(cards))}
 function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer();if(id==="read")renderReading();if(id==="write")renderWriting();if(id==="progress")renderProgress();if(id==="diagnostic")renderDiagnostic()}
