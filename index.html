@@ -304,14 +304,33 @@ function finishWriting(){
  $("writeInput").disabled=true;recordAttempt(good);if(good){xp+=18;$("xp").textContent=xp}save();
  $("writeFeedback").innerHTML='<b>'+(good?"Sehr gut! ✍️":"Vergleiche mit der Referenz und versuche es erneut.")+'</b><div class="small">Referenz: '+x[1]+'</div><button class="btn" onclick="writeIndex++;renderWriting()">Weiter</button>';
 }
-function renderProgress(){
+function renderProgress(){renderErrorProfile();
  const all=lessons.flatMap(l=>l.words),seen=all.filter(([es])=>cards[es]),mastered=seen.filter(([es])=>mastery(cards[es])>=75);
  const acc=daily.attempts?Math.round(daily.correct/daily.attempts*100):0;
  $("progressBody").innerHTML='<div class="row"><span>Wörter gelernt</span><b>'+seen.length+'/'+all.length+'</b></div><div class="row"><span>Stabil beherrscht</span><b>'+mastered.length+'</b></div><div class="row"><span>Heute Trefferquote</span><b>'+acc+'%</b></div><div class="row"><span>Heute Lernzeit</span><b>'+daily.minutes.toFixed(1)+' min</b></div><div class="notice">Diese Werte sind Trainingsindikatoren, keine standardisierten CEFR-Prüfwerte. Der nächste Lernschritt richtet sich primär nach Abrufleistung und Wiederholungsfälligkeit.</div>';
 }
 function resetProgress(){if(confirm("Wirklich alle Lernfortschritte auf diesem Gerät löschen?")){localStorage.removeItem("es_xp");localStorage.removeItem("es_streak");localStorage.removeItem("es_progress");localStorage.removeItem("es_cards");localStorage.removeItem("es_daily");location.reload()}}
 
-// ---------- Lernprofil & Startdiagnostik ----------
+
+// ---------- Fehlerprofil ----------
+let errorProfile=JSON.parse(localStorage.getItem("es_errors")||"{}");
+function recordError(skill,kind,es,de){
+ const k=skill+"::"+kind;
+ errorProfile[k]=errorProfile[k]||{count:0,examples:[]};
+ errorProfile[k].count++;
+ if(es&&!errorProfile[k].examples.includes(es))errorProfile[k].examples=errorProfile[k].examples.slice(-4).concat(es);
+ localStorage.setItem("es_errors",JSON.stringify(errorProfile));
+}
+function errorSummary(){
+ return Object.entries(errorProfile).sort((a,b)=>b[1].count-a[1].count).slice(0,5);
+}
+function renderErrorProfile(){
+ const rows=errorSummary();
+ const el=document.getElementById("errorProfile");
+ if(!el)return;
+ el.innerHTML=rows.length?rows.map(([k,v])=>'<div class="small" style="margin:8px 0"><b>'+k.split("::")[0]+'</b> · '+k.split("::")[1]+' — '+v.count+' Fehler</div>').join(""):'<p class="small muted">Noch kein Fehlerprofil vorhanden.</p>';
+}
+\n// ---------- Lernprofil & Startdiagnostik ----------
 const diagnosticItems=[
  {skill:"vocab",level:"A1",q:"¿Dónde está el baño?",opts:["Wo ist die Toilette?","Wie geht es dir?","Was kostet das?","Wo wohnst du?"],a:0},
  {skill:"vocab",level:"A1",q:"Mañana voy a estudiar.",opts:["Morgen werde ich lernen.","Gestern habe ich gelernt.","Ich lerne nie.","Ich habe Hunger."],a:0},
@@ -329,7 +348,7 @@ function renderDiagnostic(){
    const pct=Math.round(diagnosticScore/diagnosticItems.length*100);
    const level=pct>=88?"B2":pct>=63?"B1":pct>=38?"A2":"A1";
    localStorage.setItem("es_level",level);
-   $("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Einstiegspunkt: '+level+'</div><div class="de">'+pct+'% im Kurztest</div><p class="small muted">Das ist eine Trainingsdiagnose, keine offizielle CEFR-Einstufung. Du kannst jederzeit mit einer niedrigeren Stufe beginnen.</p><button class="btn" onclick="setTab(\'learn\')">Lernen starten</button></div>';
+   $("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Einstiegspunkt: '+level+'</div><div class="de">'+pct+'% im Kurztest</div><p class="small muted">Das ist eine Trainingsdiagnose, keine offizielle CEFR-Einstufung. Du kannst jederzeit mit einer niedrigeren Stufe beginnen.</p><div id="errorProfile"></div><button class="btn" onclick="setTab(\'learn\')">Lernen starten</button></div>';
    return;
  }
  diagnosticAnswered=false;
