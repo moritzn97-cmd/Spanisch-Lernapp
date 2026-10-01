@@ -9,7 +9,7 @@
 <body><main>
 <header class="top"><div class="logo">🇪🇸 Español</div><div class="stats"><span class="pill">🔥 <b id="streak">1</b></span><span class="pill">⭐ <b id="xp">0</b></span></div></header>
 <section class="hero"><h1>¡Hola!</h1><p id="heroText">Dein Spanisch-Training für heute.</p></section>
-<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="speak">🗣️ Sprechen</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button><button data-tab="read">📖 Lesen</button><button data-tab="write">✍️ Schreiben</button><button data-tab="progress">Fortschritt</button></nav>
+<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="speak">🗣️ Sprechen</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button><button data-tab="read">📖 Lesen</button><button data-tab="write">✍️ Schreiben</button><button data-tab="progress">Fortschritt</button><button data-tab="diagnostic">Einstufung</button></nav>
 
 <section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card" id="adaptiveInfo"><div class="sectiontitle"><h2>Dein Lernplan</h2><span class="tag">adaptiv</span></div><p class="small muted">Die App priorisiert fällige und unsichere Wörter. Neue Inhalte werden mit Wiederholung gemischt, statt einfach möglichst viel Stoff auf einmal zu zeigen.</p></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: ca. 12 Minuten mit aktivem Abrufen und Wiederholen.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lerneinheit.</p><button class="btn" onclick="startAdaptiveSession()">▶ Empfohlene Einheit starten</button></div></section>
 
@@ -75,7 +75,7 @@ function sessionWords(){
 }
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){localStorage.setItem("es_xp",xp);localStorage.setItem("es_streak",streak);localStorage.setItem("es_progress",JSON.stringify(progress));localStorage.setItem("es_cards",JSON.stringify(cards))}
-function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer();if(id==="read")renderReading();if(id==="write")renderWriting();if(id==="progress")renderProgress()}
+function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer();if(id==="read")renderReading();if(id==="write")renderWriting();if(id==="progress")renderProgress();if(id==="diagnostic")renderDiagnostic()}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 function renderHome(){
 let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;
@@ -310,4 +310,40 @@ function renderProgress(){
  $("progressBody").innerHTML='<div class="row"><span>Wörter gelernt</span><b>'+seen.length+'/'+all.length+'</b></div><div class="row"><span>Stabil beherrscht</span><b>'+mastered.length+'</b></div><div class="row"><span>Heute Trefferquote</span><b>'+acc+'%</b></div><div class="row"><span>Heute Lernzeit</span><b>'+daily.minutes.toFixed(1)+' min</b></div><div class="notice">Diese Werte sind Trainingsindikatoren, keine standardisierten CEFR-Prüfwerte. Der nächste Lernschritt richtet sich primär nach Abrufleistung und Wiederholungsfälligkeit.</div>';
 }
 function resetProgress(){if(confirm("Wirklich alle Lernfortschritte auf diesem Gerät löschen?")){localStorage.removeItem("es_xp");localStorage.removeItem("es_streak");localStorage.removeItem("es_progress");localStorage.removeItem("es_cards");localStorage.removeItem("es_daily");location.reload()}}
+
+// ---------- Lernprofil & Startdiagnostik ----------
+const diagnosticItems=[
+ {skill:"vocab",level:"A1",q:"¿Dónde está el baño?",opts:["Wo ist die Toilette?","Wie geht es dir?","Was kostet das?","Wo wohnst du?"],a:0},
+ {skill:"vocab",level:"A1",q:"Mañana voy a estudiar.",opts:["Morgen werde ich lernen.","Gestern habe ich gelernt.","Ich lerne nie.","Ich habe Hunger."],a:0},
+ {skill:"grammar",level:"A2",q:"Ayer ___ al supermercado.",opts:["fui","voy","iré","iba"],a:0},
+ {skill:"grammar",level:"A2",q:"Cuando era niño, ___ mucho fútbol.",opts:["jugaba","jugué","jugaré","juego"],a:0},
+ {skill:"vocab",level:"B1",q:"Aunque estaba cansado, siguió trabajando.",opts:["Obwohl er müde war, arbeitete er weiter.","Weil er müde war, ging er nach Hause.","Er wird morgen arbeiten.","Er hat Urlaub."],a:0},
+ {skill:"grammar",level:"B1",q:"Si tuviera tiempo, ___ más.",opts:["viajaría","viajo","viajé","viajaré"],a:0},
+ {skill:"vocab",level:"B2",q:"Sin embargo, los resultados fueron convincentes.",opts:["Allerdings waren die Ergebnisse überzeugend.","Deshalb wurden die Ergebnisse abgesagt.","Die Ergebnisse waren unbekannt.","Die Ergebnisse kamen morgen."],a:0},
+ {skill:"grammar",level:"B2",q:"Es importante que lo ___ cuanto antes.",opts:["hagas","haces","harás","hiciste"],a:0}
+];
+let diagnosticIndex=0,diagnosticScore=0,diagnosticAnswered=false;
+function renderDiagnostic(){
+ const x=diagnosticItems[diagnosticIndex];
+ if(!x){
+   const pct=Math.round(diagnosticScore/diagnosticItems.length*100);
+   const level=pct>=88?"B2":pct>=63?"B1":pct>=38?"A2":"A1";
+   localStorage.setItem("es_level",level);
+   $("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Einstiegspunkt: '+level+'</div><div class="de">'+pct+'% im Kurztest</div><p class="small muted">Das ist eine Trainingsdiagnose, keine offizielle CEFR-Einstufung. Du kannst jederzeit mit einer niedrigeren Stufe beginnen.</p><button class="btn" onclick="setTab(\'learn\')">Lernen starten</button></div>';
+   return;
+ }
+ diagnosticAnswered=false;
+ $("diagnosticBody").innerHTML='<div class="tag">'+x.level+' · '+(diagnosticIndex+1)+'/'+diagnosticItems.length+'</div><h3>'+x.q+'</h3><div class="answers">'+x.opts.map((o,i)=>'<button class="answer" onclick="answerDiagnostic(this,'+i+')">'+o+'</button>').join("")+'</div><div id="diagFeedback" class="feedback"></div>';
+}
+function answerDiagnostic(btn,i){
+ if(diagnosticAnswered)return;
+ diagnosticAnswered=true;
+ const x=diagnosticItems[diagnosticIndex],good=i===x.a;
+ document.querySelectorAll("#diagnosticBody .answer").forEach(b=>b.disabled=true);
+ btn.classList.add(good?"correct":"wrong");
+ if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(b=>{if(b.textContent===x.opts[x.a])b.classList.add("correct")});
+ if(good)diagnosticScore++;
+ const f=$("diagFeedback");f.innerHTML='<b>'+(good?"Richtig":"Nicht ganz")+'</b><button class="btn" onclick="diagnosticIndex++;renderDiagnostic()">Weiter</button>';
+}
+function getLevel(){return localStorage.getItem("es_level")||"A1"}
 </script></body></html>
