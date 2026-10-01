@@ -165,7 +165,33 @@ function answer(btn,es,de){if(answered)return;answered=true;document.querySelect
 function next(){current++;renderExercise()}
 function renderReview(){let due=dueCards();$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" onclick="reviewOne()">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
 function reviewOne(){let due=dueCards();if(!due.length)return;let es=due[0][0],all=allWords(),de=all.find(x=>x[0]===es)?.[1]||cards[es]?.de||"";let opts=[de];while(opts.length<4){let x=all[Math.floor(Math.random()*all.length)][1];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);$("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{let good=b.textContent===de;b.classList.add(good?"correct":"wrong");if(good){xp+=10;updateCard(es,de,true);$("xp").textContent=xp;setTimeout(renderReview,500)}else{updateCard(es,de,false);document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===de)x.classList.add("correct")})}})}
-function startGrammar(){let qs=[["Yo ___ estudiante.","soy",["soy","estoy","es","eres"]],["¿___ está la estación?","Dónde",["Qué","Dónde","Cuándo","Quién"]],["Ella ___ en Madrid.","vive",["vivo","vive","viven","vivimos"]]];let q=qs[Math.floor(Math.random()*qs.length)];$("exercise").innerHTML='<div class="word" style="font-size:25px">'+q[0]+'</div><div class="answers">'+q[2].map(x=>'<button class="answer">'+x+'</button>').join("")+'</div>';setTab("learn");document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{document.querySelectorAll(".answer").forEach(x=>x.disabled=true);b.classList.add(b.textContent===q[1]?"correct":"wrong");if(b.textContent!==q[1])markGrammarError("Grundgrammatik")})}
+function startGrammar(){
+ const qs=[
+ ["A1 · ser","Yo ___ estudiante.","soy",["soy","estoy","es","eres"]],
+ ["A1 · estar","Madrid ___ en España.","está",["es","está","son","hay"]],
+ ["A1 · presente","Nosotros ___ español.","estudiamos",["estudia","estudiamos","estudian","estudio"]],
+ ["A2 · indefinido","Ayer ___ al cine.","fui",["voy","fui","iba","iré"]],
+ ["A2 · imperfecto","Cuando era niño, ___ mucho.","jugaba",["jugué","juego","jugaba","jugaré"]],
+ ["A2 · pronombre","A María ___ gusta la música.","le",["la","le","lo","se"]],
+ ["B1 · condicional","Si tuviera tiempo, ___ más.","viajaría",["viajo","viajé","viajaría","viajaré"]],
+ ["B1 · subjuntivo","Es importante que ___ a tiempo.","llegues",["llegas","llegaste","llegues","llegarás"]],
+ ["B1 · conectores","No fui ___ estaba enfermo.","porque",["aunque","porque","sin embargo","por eso"]],
+ ["B2 · subjuntivo","Es posible que ___ mañana.","llueva",["llueve","llovió","llueva","lloverá"]],
+ ["B2 · estilo","Aunque ___ cansado, continuó.","estaba",["estuvo","estaba","estará","esté"]],
+ ["B2 · concesión","A pesar de que ___ difícil, lo consiguió.","era",["es","fue","era","será"]]
+ ];
+ const q=qs[Math.floor(Math.random()*qs.length)];
+ $("exercise").innerHTML='<div class="tag">'+q[0]+'</div><div class="word" style="font-size:25px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';
+ setTab("learn");
+ document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".answer").forEach(x=>x.disabled=true);
+  const good=b.textContent===q[2];
+  b.classList.add(good?"correct":"wrong");
+  if(!good)document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===q[2])x.classList.add("correct")});
+  markGrammarError(good?"":"Grammatik · "+q[0]);
+  $("feedback").innerHTML='<b>'+(good?"Richtig!":"Noch einmal.")+'</b><div class="small">Lösung: '+q[2]+'</div><button class="btn" onclick="startGrammar()">Nächste Aufgabe</button>';
+ });
+}
 renderHome();
 function speak(t){if("speechSynthesis"in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=.82;speechSynthesis.speak(u)}}
 function startSentence(){const qs=[["Ich heiße Moritz.","Me llamo Moritz."],["Ich studiere Spanisch.","Estudio español."],["Wo ist der Bahnhof?","¿Dónde está la estación?"],["Ich hätte gern einen Kaffee.","Quisiera un café."],["Wie viel kostet das?","¿Cuánto cuesta?"],["Ich wohne in Deutschland.","Vivo en Alemania."]];const q=qs[Math.floor(Math.random()*qs.length)];let a=[q[1]];while(a.length<4){const x=qs[Math.floor(Math.random()*qs.length)][1];if(!a.includes(x))a.push(x)}a.sort(()=>Math.random()-.5);$("exercise").innerHTML='<div class="tag">Satztraining</div><div class="word" style="font-size:25px">'+q[0]+'</div><div class="hint">Welche Übersetzung ist richtig?</div><div class="answers">'+a.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div class="sound"><button onclick="speak(\''+q[1].replace(/'/g,"\\'")+'\')">🔊 Spanisch anhören</button></div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{document.querySelectorAll(".answer").forEach(x=>x.disabled=true);const ok=b.textContent===q[1];b.classList.add(ok?"correct":"wrong");if(ok){xp+=15;$("xp").textContent=xp;save()}else{markGrammarError("Satzübersetzung")}});setTab("learn")}
