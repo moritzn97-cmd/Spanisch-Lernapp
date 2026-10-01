@@ -11,17 +11,17 @@
 <section class="hero"><h1>¡Hola!</h1><p id="heroText">Dein Spanisch-Training für heute.</p></section>
 <nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="speak">🗣️ Sprechen</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button><button data-tab="read">📖 Lesen</button><button data-tab="write">✍️ Schreiben</button><button data-tab="progress">Fortschritt</button><button data-tab="diagnostic">Einstufung</button></nav>
 
-<section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card" id="adaptiveInfo"><div class="sectiontitle"><h2>Dein Lernplan</h2><span class="tag">adaptiv</span></div><p class="small muted">Die App priorisiert fällige und unsichere Wörter. Neue Inhalte werden mit Wiederholung gemischt, statt einfach möglichst viel Stoff auf einmal zu zeigen.</p></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: ca. 12 Minuten mit aktivem Abrufen und Wiederholen.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lerneinheit.</p><button class="btn" onclick="startAdaptiveSession()">▶ Empfohlene Einheit starten</button></div></section>
+<section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card" id="adaptiveInfo"><div class="sectiontitle"><h2>Dein Lernplan</h2><span class="tag">adaptiv</span></div><p class="small muted">Die App priorisiert fällige und unsichere Wörter. Neue Inhalte werden mit Wiederholung gemischt, statt einfach möglichst viel Stoff auf einmal zu zeigen.</p></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: ca. 12 Minuten mit aktivem Abrufen und Wiederholen.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lerneinheit.</p><button class="btn" data-action="startAdaptiveSession">▶ Empfohlene Einheit starten</button></div></section>
 
 <section id="learn" class="tab hidden"><div class="card"><div class="sectiontitle"><span class="tag" id="lessonTag">A1</span><span class="small muted" id="counter"></span></div><div id="exercise"></div></div></section>
 <section id="speak" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>🗣️ Sprechtraining</h2><span class="tag">Produktion</span></div><p class="muted small">Sprich den spanischen Satz laut. Die App versucht deine Antwort zu erkennen und zeigt dir anschließend die Referenzlösung.</p><div id="speakBody"></div></div></section>
 <section id="listen" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>🎧 Hörverständnis</h2><span class="tag">A1–B1</span></div><p class="muted small">Höre zuerst ohne mitzulesen und entscheide dann, was du verstanden hast.</p><div id="listenBody"></div></div></section>
 <section id="dialog" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>💬 Dialogtrainer</h2><span class="tag">Alltag</span></div><p class="muted small">Kurze Situationen mit natürlicher Sprache. Höre, verstehe und wähle eine passende Antwort.</p><div id="dialogBody"></div></div></section>
 <section id="review" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Spaced Repetition</h2><span class="tag" id="dueCount">0 fällig</span></div><p class="muted small">Wörter werden wiederholt, bevor du sie vergisst.</p><div id="reviewBody"></div></div></section>
-<section id="grammar" class="tab hidden"><div class="card"><h2>Grammatik A1</h2><div class="grammar"><b>ser – sein</b><span class="small muted">soy, eres, es, somos, sois, son</span></div><div class="grammar"><b>estar – sich befinden / sein</b><span class="small muted">estoy, estás, está, estamos, estáis, están</span></div><div class="grammar"><b>Artikel</b><span class="small muted">el / la = der / die · un / una = ein / eine</span></div><div class="grammar"><b>Fragen</b><span class="small muted">¿Qué? was · ¿Dónde? wo · ¿Cuándo? wann · ¿Cuánto? wie viel</span></div><button class="btn" onclick="startGrammar()">Grammatik-Quiz starten</button><button class="btn ghost" onclick="startSentence()">🗣️ Satztraining starten</button><button class="btn ghost" onclick="startDialogue()">💬 Dialog üben</button><div class="sound"><button onclick="speak('Hola, ¿cómo estás?')">🔊 Aussprache hören</button></div></div></section>
+<section id="grammar" class="tab hidden"><div class="card"><h2>Grammatik A1</h2><div class="grammar"><b>ser – sein</b><span class="small muted">soy, eres, es, somos, sois, son</span></div><div class="grammar"><b>estar – sich befinden / sein</b><span class="small muted">estoy, estás, está, estamos, estáis, están</span></div><div class="grammar"><b>Artikel</b><span class="small muted">el / la = der / die · un / una = ein / eine</span></div><div class="grammar"><b>Fragen</b><span class="small muted">¿Qué? was · ¿Dónde? wo · ¿Cuándo? wann · ¿Cuánto? wie viel</span></div><button class="btn" data-action="startGrammar">Grammatik-Quiz starten</button><button class="btn ghost" data-action="startSentence">🗣️ Satztraining starten</button><button class="btn ghost" data-action="startDialogue">💬 Dialog üben</button><div class="sound"><button data-action="speak" data-text="Hola, ¿cómo estás?">🔊 Aussprache hören</button></div></div></section>
 <section id="read" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>📖 Lesen</h2><span class="tag">Kontext</span></div><p class="muted small">Lies zuerst für die Gesamtbedeutung. Danach prüfst du dein Verständnis.</p><div id="readBody"></div></div></section>
 <section id="write" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>✍️ Schreiben</h2><span class="tag">Produktion</span></div><p class="muted small">Formuliere selbst, bevor du die Referenz siehst.</p><div id="writeBody"></div></div></section>
-<section id="progress" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Lernfortschritt</h2><span class="tag">Übersicht</span></div><div id="progressBody"></div><div id="errorProfile" class="notice" style="margin-top:14px"></div><button class="btn ghost" onclick="resetProgress()">Fortschritt zurücksetzen</button></div></section>
+<section id="progress" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Lernfortschritt</h2><span class="tag">Übersicht</span></div><div id="progressBody"></div><div id="errorProfile" class="notice" style="margin-top:14px"></div><button class="btn ghost" data-action="resetProgress">Fortschritt zurücksetzen</button></div></section>
 <section id="diagnostic" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Einstufung</h2><span class="tag">A1–B2</span></div><div id="diagnosticBody"></div></div></section>
 </main>
 <script>
@@ -88,10 +88,37 @@ function sessionWords(){
   const pool=practicePool();
   return pool.length?pool:allWords().slice(0,8);
 }
+function dispatchAppAction(el,ev){
+ const a=el?.dataset?.action;if(!a)return false;const n=el.dataset;
+ switch(a){
+  case "setTab":setTab(n.tab);break;case "startLesson":startLesson(Number(n.id));break;case "speak":speak(n.text||el.textContent.trim());break;
+  case "speakText":speakText(n.text||"",Number(n.rate)||.82);break;case "answer":answer(el);break;case "checkRecall":checkRecall(ev);break;
+  case "checkSentence":checkSentence(n.expected||el.dataset.expected);break;case "answerListening":answerListening(el,Number(n.index));break;
+  case "finishDialog":finishDialog(el,Number(n.index));break;case "finishReading":finishReading(el,Number(n.index));break;
+  case "diagnosticChoose":diagnosticChoose(el,Number(n.index));break;case "nextDialog":dialogIndex++;startDialogTrainer();break;
+  case "nextReading":readIndex++;renderReading();break;case "nextDiagnostic":diagnosticIndex++;renderDiagnostic();break;
+  case "next":next();break;case "nextListening":nextListening();break;case "nextSpeaking":nextSpeaking();break;
+  case "startAdaptiveSession":startAdaptiveSession();break;case "startGrammar":startGrammar();break;case "startSentence":startSentence();break;
+  case "startDialogue":startDialogue();break;case "startRecognition":startRecognition();break;case "showSpeakingAnswer":showSpeakingAnswer();break;
+  case "renderReview":renderReview();break;case "reviewOne":reviewOne();break;case "renderDiagnostic":renderDiagnostic();break;
+  case "resetProgress":resetProgress();break;case "finishWriting":finishWriting(ev);break;default:return false;
+ }
+ return true;
+}
+document.addEventListener("click",function(ev){
+ const target=ev.target.closest("button,[role='button'],a");if(!target)return;
+ let handled=dispatchAppAction(target,ev);
+ if(!handled && target.matches("#reviewBody .answer")){target.click();handled=true;}
+ else if(!handled && target.matches("#learn .answer") && typeof window.__grammarAnswer!=="undefined"){target.click();handled=true;}
+ else if(!handled && target.id==="solutionAudio"){speak(target.dataset.text||"");handled=true;}
+ else if(!handled && target.id==="homeBtn"){setTab("home");handled=true;}
+ else if(!handled && target.id==="writeNext"){writeIndex++;renderWriting();handled=true;}
+ if(handled){ev.preventDefault();ev.stopImmediatePropagation();}
+},true);
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){store.setItem("es_xp",xp);store.setItem("es_streak",streak);store.setItem("es_progress",JSON.stringify(progress));store.setItem("es_cards",JSON.stringify(cards))}
 function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer();if(id==="read")renderReading();if(id==="write")renderWriting();if(id==="progress")renderProgress();if(id==="diagnostic")renderDiagnostic()}
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+document.querySelectorAll(".nav button").forEach(b=>b.dataset.action="setTab");
 function recommendedSession(){
  const level=getLevel(), rows=errorSummary();
  if(rows.length){
@@ -105,12 +132,12 @@ function recommendedSession(){
 function renderRecommendation(){
  const el=document.getElementById("dailyRecommendation"); if(!el)return;
  const r=recommendedSession();
- el.innerHTML='<div class="card" style="margin-top:12px"><div class="tag">Deine nächste Einheit</div><h3>'+r.label+'</h3><p class="small muted">'+r.detail+'</p><button class="btn" onclick="startAdaptiveSession()">Jetzt 10 Minuten lernen</button></div>';
+ el.innerHTML='<div class="card" style="margin-top:12px"><div class="tag">Deine nächste Einheit</div><h3>'+r.label+'</h3><p class="small muted">'+r.detail+'</p><button class="btn" data-action="startAdaptiveSession">Jetzt 10 Minuten lernen</button></div>';
 }
 function renderHome(){
 let completed=lessons.filter(l=>Number(progress[l.id]||0)>=l.words.length).length;
 let unlocked=Math.min(completed+1,lessons.length);
-$("lessons").innerHTML=lessons.map(l=>{let p=progress[l.id]||0,lock=l.id>unlocked;return '<div class="lesson '+(lock?"locked":"")+'"><div class="sectiontitle"><h3>'+l.title+'</h3><span class="tag">'+(l.level||"A1")+' · '+p+'/'+l.words.length+'</span></div><div class="bar"><i style="width:'+p/l.words.length*100+'%"></i></div><button class="btn '+(lock?"ghost":"")+'" '+(lock?"disabled":"")+' onclick="startLesson('+l.id+')">'+(lock?"🔒 Gesperrt":p?"Fortsetzen":"Starten")+'</button></div>'}).join("");
+$("lessons").innerHTML=lessons.map(l=>{let p=progress[l.id]||0,lock=l.id>unlocked;return '<div class="lesson '+(lock?"locked":"")+'"><div class="sectiontitle"><h3>'+l.title+'</h3><span class="tag">'+(l.level||"A1")+' · '+p+'/'+l.words.length+'</span></div><div class="bar"><i style="width:'+p/l.words.length*100+'%"></i></div><button class="btn '+(lock?"ghost":"")+'" '+(lock?"disabled":"")+' data-action="startLesson" data-id="'+l.id+'">'+(lock?"🔒 Gesperrt":p?"Fortsetzen":"Starten")+'</button></div>'}).join("");
 let due=dueCards().length, total=lessons.reduce((a,l)=>a+l.words.length,0),done=Object.values(progress).reduce((a,b)=>a+b,0),pct=Math.round(done/total*100);
 $("todayPct").textContent=(daily.minutes?Math.min(100,Math.round(daily.minutes/12*100)):pct)+"%";
 $("todayBar").style.width=Math.min(100,daily.minutes/12*100)+"%";
@@ -142,13 +169,13 @@ function renderExercise(){
   $("counter").textContent=(current+1)+" / "+queue.length;
   $("lessonTag").textContent=l?((l.level||"A1")+" · "+l.title):"Adaptives Training";
   if(recall){
-    $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn" type="button" onclick="checkRecall(event)">Antwort prüfen</button><div id="feedback" class="feedback"></div>';
+    $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn" type="button" data-action="checkRecall">Antwort prüfen</button><div id="feedback" class="feedback"></div>';
     $("recallInput").focus();
     $("recallInput").addEventListener("keydown",ev=>{if(ev.key==="Enter")checkRecall()});
   }else{
     let opts=[de];while(opts.length<4){const x=queue[Math.floor(Math.random()*queue.length)][1];if(!opts.includes(x))opts.push(x)}
     opts.sort(()=>Math.random()-.5);
-    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" onclick="answer(this,\''+es.replace(/'/g,"&#39;")+'\',\''+x.replace(/'/g,"&#39;")+'\')">'+x+'</button>').join("")+'</div><div id="exerciseFeedback" class="feedback"></div>';
+    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" data-action="answer"&#39;")+'\',\''+x.replace(/'/g,"&#39;")+'\')">'+x+'</button>').join("")+'</div><div id="exerciseFeedback" class="feedback"></div>';
     
   }
 }
@@ -162,11 +189,11 @@ function checkRecall(ev){
   input.disabled=true;
   updateCard(es,de,good);
   if(good){xp+=15;$("xp").textContent=xp}
-  $("feedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Fast – noch einmal abrufen.")+'</b><div class="small">Gesucht: '+es+' = '+de+'</div><button class="btn" onclick="next()">Weiter</button>';
+  $("feedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Fast – noch einmal abrufen.")+'</b><div class="small">Gesucht: '+es+' = '+de+'</div><button class="btn" data-action="next">Weiter</button>';
 }
-function answer(btn,es,de){if(answered)return;answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}if(currentLesson!=null)progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);updateCard(es,de,good);$("feedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" onclick="next()">Weiter</button>'}
+function answer(btn,es,de){if(answered)return;if(es==null||de==null){const item=queue[current];if(!item)return;es=item[0];de=item[1];}answered=true;document.querySelectorAll(".answer").forEach(b=>b.disabled=true);let good=btn.textContent===de;recordAttempt(good);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll(".answer").forEach(b=>{if(b.textContent===de)b.classList.add("correct")});if(good){xp+=10;$("xp").textContent=xp}if(currentLesson!=null)progress[currentLesson]=Math.max(progress[currentLesson]||0,current+1);updateCard(es,de,good);$("feedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Noch einmal üben.")+'</b><div class="small">'+es+" = "+de+'</div><button class="btn" data-action="next">Weiter</button>'}
 function next(){current++;renderExercise()}
-function renderReview(){let due=dueCards();$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" onclick="reviewOne()">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
+function renderReview(){let due=dueCards();$("dueCount").textContent=due.length+" fällig";$("reviewBody").innerHTML=due.length?'<div class="flash"><div class="es">'+due[0][0]+'</div><div class="de">Bereit für die Wiederholung?</div><button class="btn" data-action="reviewOne">Jetzt wiederholen</button></div>':'<div class="flash"><div class="es">🎉</div><div class="de">Keine Wörter fällig. Komm später wieder!</div></div>'}
 function reviewOne(){
   answered=false;let due=dueCards();if(!due.length){renderReview();return;}
   let es=due[0][0],all=allWords(),de=all.find(x=>x[0]===es)?.[1]||cards[es]?.de||"";
@@ -178,7 +205,7 @@ function reviewOne(){
     let good=b.textContent===de;recordAttempt(good);b.classList.add(good?"correct":"wrong");
     if(!good)document.querySelectorAll("#reviewBody .answer").forEach(x=>{if(x.textContent===de)x.classList.add("correct")});
     updateCard(es,de,good);if(good){xp+=10;$("xp").textContent=xp}
-    $("reviewFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Nicht ganz.")+'</b><div class="small">Lösung: '+de+'</div><button class="btn" onclick="renderReview()">Weiter</button>';
+    $("reviewFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Nicht ganz.")+'</b><div class="small">Lösung: '+de+'</div><button class="btn" data-action="renderReview">Weiter</button>';
   });
 }
 function startGrammar(){
@@ -206,7 +233,7 @@ function startGrammar(){
   b.classList.add(good?"correct":"wrong");
   if(!good)document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===q[2])x.classList.add("correct")});
   recordAttempt(good);if(!good)markGrammarError("Grammatik · "+q[0]);
-  $("feedback").innerHTML='<b>'+(good?"Richtig!":"Noch einmal.")+'</b><div class="small">Lösung: '+q[2]+'</div><button class="btn" onclick="startGrammar()">Nächste Aufgabe</button>';
+  $("feedback").innerHTML='<b>'+(good?"Richtig!":"Noch einmal.")+'</b><div class="small">Lösung: '+q[2]+'</div><button class="btn" data-action="startGrammar">Nächste Aufgabe</button>';
  });
 }
 function speak(t){if("speechSynthesis"in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=.82;speechSynthesis.speak(u)}}
@@ -214,7 +241,7 @@ function startSentence(){
  answered=false;
  const qs=[["A1","Ich heiße Moritz.","Me llamo Moritz."],["A1","Ich studiere Spanisch.","Estudio español."],["A1","Wo ist der Bahnhof?","¿Dónde está la estación?"],["A2","Ich hätte gern einen Kaffee.","Quisiera un café."],["A2","Wie viel kostet das?","¿Cuánto cuesta?"],["A2","Gestern bin ich ins Kino gegangen.","Ayer fui al cine."],["B1","Obwohl es geregnet hat, bin ich spazieren gegangen.","Aunque llovió, fui a pasear."],["B1","Wenn ich mehr Zeit hätte, würde ich öfter reisen.","Si tuviera más tiempo, viajaría más a menudo."],["B2","Trotz der Schwierigkeiten konnten wir das Projekt abschließen.","A pesar de las dificultades, pudimos terminar el proyecto."],["B2","Es ist möglich, dass er morgen kommt.","Es posible que llegue mañana."]];
  const q=qs[Math.floor(Math.random()*qs.length)];
- $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn" type="button" onclick="checkSentence(this.dataset.expected)">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio">🔊 Lösung anhören</button></div>';
+ $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn" type="button" data-action="checkSentence">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio">🔊 Lösung anhören</button></div>';
  $("solutionAudio").onclick=()=>speak(q[2]);
  $("sentenceInput").focus();
  $("sentenceInput").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();checkSentence(q[2])}});
@@ -229,7 +256,7 @@ function checkSentence(expected){
  const good=given===target,close=!good&&overlap>=.7;
  input.disabled=true;$("sentenceBtn").disabled=true;recordAttempt(good);
  if(good){xp+=20;$("xp").textContent=xp;save();}else markGrammarError("Satzübersetzung");
- $("feedback").innerHTML='<b>'+ (good?"Richtig! 🎉":close?"Fast – der Satz ist sehr nah dran.":"Noch einmal vergleichen.") +'</b><div class="small">Referenz: '+expected+'</div><button class="btn" onclick="startSentence()">Nächster Satz</button>';
+ $("feedback").innerHTML='<b>'+ (good?"Richtig! 🎉":close?"Fast – der Satz ist sehr nah dran.":"Noch einmal vergleichen.") +'</b><div class="small">Referenz: '+expected+'</div><button class="btn" data-action="startSentence">Nächster Satz</button>';
 }
 
 // Erweiterter Kurs: A2/B1 Wortschatz und Dialoge
@@ -260,7 +287,7 @@ const dialogues=[
 — ¿Has terminado la tarea?
 — Todavía no.`]
 ];
-function startDialogue(){const d=dialogues[Math.floor(Math.random()*dialogues.length)];$("exercise").innerHTML='<div class="tag">Dialog · '+d[0]+'</div><div style="white-space:pre-line;line-height:1.65;margin-top:15px;font-size:16px">'+d[1]+'</div><div class="sound"><button onclick="speak('+JSON.stringify(d[1])+')">🔊 Dialog anhören</button></div><button class="btn" onclick="startDialogue()">Nächsten Dialog</button>';setTab("learn")}
+function startDialogue(){const d=dialogues[Math.floor(Math.random()*dialogues.length)];$("exercise").innerHTML='<div class="tag">Dialog · '+d[0]+'</div><div style="white-space:pre-line;line-height:1.65;margin-top:15px;font-size:16px">'+d[1]+'</div><div class="sound"><button data-action="speak" data-text="'+d[1]+'">🔊 Dialog anhören</button></div><button class="btn" data-action="startDialogue">Nächsten Dialog</button>';setTab("learn")}
 
 
 
@@ -278,7 +305,7 @@ let speakingIndex=0,recognition=null,speakingActive=false;
 function startSpeaking(){
  const x=speakingItems[speakingIndex%speakingItems.length];
  const supported=("SpeechRecognition"in window)||("webkitSpeechRecognition"in window);
- $("speakBody").innerHTML='<div class="tag">Satz '+(speakingIndex+1)+'/'+speakingItems.length+'</div><div class="flash"><div class="de">'+x.de+'</div><div class="es" style="font-size:24px">Sprich den spanischen Satz.</div><button class="btn ghost" onclick="speakText('+JSON.stringify(x.es)+',.78)">🔊 Referenz anhören</button></div><div id="speechStatus" class="feedback muted small">'+(supported?"Bereit zur Aufnahme.":"Dein Browser unterstützt hier keine Spracherkennung – nutze Selbstvergleich.")+'</div><button class="btn" onclick="startRecognition()">🎙️ Sprechen</button><button class="btn ghost" onclick="showSpeakingAnswer()">Antwort anzeigen</button><div id="speechResult" class="feedback"></div>';
+ $("speakBody").innerHTML='<div class="tag">Satz '+(speakingIndex+1)+'/'+speakingItems.length+'</div><div class="flash"><div class="de">'+x.de+'</div><div class="es" style="font-size:24px">Sprich den spanischen Satz.</div><button class="btn ghost" data-action="speakText" data-text="'+x.es+'" data-rate="0.78">🔊 Referenz anhören</button></div><div id="speechStatus" class="feedback muted small">'+(supported?"Bereit zur Aufnahme.":"Dein Browser unterstützt hier keine Spracherkennung – nutze Selbstvergleich.")+'</div><button class="btn" data-action="startRecognition">🎙️ Sprechen</button><button class="btn ghost" data-action="showSpeakingAnswer">Antwort anzeigen</button><div id="speechResult" class="feedback"></div>';
 }
 function startRecognition(){
  const API=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -302,12 +329,12 @@ function evaluateSpeech(heard){
  recordAttempt(good);if(!good)recordError("speaking","satz",x.es,"");
  if(good){xp+=20;$("xp").textContent=xp}
  $("speechStatus").textContent=good?"Gut erkannt!":"Noch einmal versuchen.";
- $("speechResult").innerHTML='<div class="small">Erkannt: <b>'+heard+'</b></div><div class="small">Referenz: <b>'+x.es+'</b></div><div class="small muted">Hinweis: Die Browser-Erkennung ist nur ein grober Textvergleich und keine zuverlässige Aussprachebewertung.</div><button class="btn" onclick="nextSpeaking()">Nächster Satz</button>';
+ $("speechResult").innerHTML='<div class="small">Erkannt: <b>'+heard+'</b></div><div class="small">Referenz: <b>'+x.es+'</b></div><div class="small muted">Hinweis: Die Browser-Erkennung ist nur ein grober Textvergleich und keine zuverlässige Aussprachebewertung.</div><button class="btn" data-action="nextSpeaking">Nächster Satz</button>';
  save();
 }
 function showSpeakingAnswer(){
  const x=speakingItems[speakingIndex%speakingItems.length];
- $("speechResult").innerHTML='<div class="small">Referenz: <b>'+x.es+'</b></div><p class="small muted">Sprich den Satz jetzt noch einmal laut und vergleiche Rhythmus und Aussprache.</p><button class="btn" onclick="nextSpeaking()">Nächster Satz</button>';
+ $("speechResult").innerHTML='<div class="small">Referenz: <b>'+x.es+'</b></div><p class="small muted">Sprich den Satz jetzt noch einmal laut und vergleiche Rhythmus und Aussprache.</p><button class="btn" data-action="nextSpeaking">Nächster Satz</button>';
 }
 function nextSpeaking(){speakingIndex++;startSpeaking()}
 
@@ -329,9 +356,9 @@ let listeningIndex=0,dialogIndex=0;
 function speakText(t,rate=.82){if(!("speechSynthesis"in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=rate;speechSynthesis.speak(u)}
 function startListening(){
   const x=listeningItems[listeningIndex%listeningItems.length];
-  $("listenBody").innerHTML='<div class="tag">Hören · '+(listeningIndex+1)+'/'+listeningItems.length+'</div><div class="flash"><div class="es">🔊</div><div class="de">Höre den Satz an, ohne mitzulesen.</div><button class="btn" onclick="speakText('+JSON.stringify(x.es)+',.72)">Langsam anhören</button><button class="btn ghost" onclick="speakText('+JSON.stringify(x.es)+',.92)">Normal anhören</button></div><div class="hint" style="margin-top:16px">Was hast du verstanden?</div><div class="answers">'+x.options.map((o,i)=>'<button class="answer" onclick="answerListening(this,'+i+','+x.options.indexOf(x.de)+')">'+o+'</button>').join("")+'</div><div id="listenFeedback" class="feedback"></div>';
+  $("listenBody").innerHTML='<div class="tag">Hören · '+(listeningIndex+1)+'/'+listeningItems.length+'</div><div class="flash"><div class="es">🔊</div><div class="de">Höre den Satz an, ohne mitzulesen.</div><button class="btn" data-action="speakText" data-text="'+x.es+'" data-rate="0.72">Langsam anhören</button><button class="btn ghost" data-action="speakText" data-text="'+x.es+'" data-rate="0.92">Normal anhören</button></div><div class="hint" style="margin-top:16px">Was hast du verstanden?</div><div class="answers">'+x.options.map((o,i)=>'<button class="answer" data-action="answerListening" data-index="'+i+'">'+o+'</button>').join("")+'</div><div id="listenFeedback" class="feedback"></div>';
 }
-function answerListening(btn,index,correctIndex){
+function answerListening(btn,index,correctIndex){if(correctIndex==null){const x=listeningItems[listeningIndex%listeningItems.length];correctIndex=x.options.indexOf(x.de);}
   if(btn.parentElement.dataset.done)return;
   btn.parentElement.dataset.done="1";
   const good=index===correctIndex;
@@ -342,24 +369,24 @@ function answerListening(btn,index,correctIndex){
   if(!cards["[listen]"+x.es])cards["[listen]"+x.es]={de:x.de,attempts:0,correct:0,streak:0,interval:.02,ease:2.2,due:Date.now()};
   const st=cards["[listen]"+x.es];st.attempts++;if(good)st.correct++;st.streak=good?(st.streak||0)+1:0;st.due=Date.now()+(good?Math.min(14,(st.interval||.02)*2.2):.02)*86400000;st.interval=good?Math.min(14,(st.interval||.02)*2.2):.02;save();
   if(good){xp+=12;$("xp").textContent=xp}
-  $("listenFeedback").innerHTML='<b>'+(good?"Richtig! 🎧":"Noch einmal hören.")+'</b><div class="small">'+x.es+' = '+x.de+'</div><button class="btn" onclick="nextListening()">Weiter</button>';
+  $("listenFeedback").innerHTML='<b>'+(good?"Richtig! 🎧":"Noch einmal hören.")+'</b><div class="small">'+x.es+' = '+x.de+'</div><button class="btn" data-action="nextListening">Weiter</button>';
 }
 function nextListening(){listeningIndex++;startListening()}
 function startDialogTrainer(){
   const d=dialogueItems[dialogIndex%dialogueItems.length];
-  $("dialogBody").innerHTML='<div class="tag">'+d.title+'</div><div style="margin-top:14px">'+d.lines.map(l=>'<div class="row"><span><b>'+(l[0]==="app"?"🇪🇸 App":"🗣️ Du")+'</b><br>'+l[1]+'</span><button class="ghost" style="border:0;border-radius:10px;padding:8px" onclick="speakText('+JSON.stringify(l[1])+',.82)">🔊</button></div>').join("")+'</div><button class="btn" onclick="dialogQuestion()">Verständnis prüfen</button>';
+  $("dialogBody").innerHTML='<div class="tag">'+d.title+'</div><div style="margin-top:14px">'+d.lines.map(l=>'<div class="row"><span><b>'+(l[0]==="app"?"🇪🇸 App":"🗣️ Du")+'</b><br>'+l[1]+'</span><button class="ghost" style="border:0;border-radius:10px;padding:8px" data-action="speakText" data-text="'+l[1]+'" data-rate="0.82">🔊</button></div>').join("")+'</div><button class="btn" data-action="dialogQuestion">Verständnis prüfen</button>';
 }
 function dialogQuestion(){
   const d=dialogueItems[dialogIndex%dialogueItems.length];
-  $("dialogBody").innerHTML='<div class="tag">'+d.title+'</div><h3>'+d.question+'</h3><div class="answers">'+d.options.map((o,i)=>'<button class="answer" onclick="finishDialog(this,'+i+')">'+o+'</button>').join("")+'</div><div id="dialogFeedback" class="feedback"></div>';
+  $("dialogBody").innerHTML='<div class="tag">'+d.title+'</div><h3>'+d.question+'</h3><div class="answers">'+d.options.map((o,i)=>'<button class="answer" data-action="finishDialog" data-index="'+i+'">'+o+'</button>').join("")+'</div><div id="dialogFeedback" class="feedback"></div>';
 }
-function finishDialog(btn,i){
+function finishDialog(btn,i){if(i==null)i=Number(btn.dataset.index);
   const d=dialogueItems[dialogIndex%dialogueItems.length],good=i===d.correct;
   document.querySelectorAll("#dialogBody .answer").forEach(b=>b.disabled=true);btn.classList.add(good?"correct":"wrong");
   recordAttempt(good);if(!good)recordError("dialog","verständnis",d.title,"");
   if(good){xp+=15;$("xp").textContent=xp}
   save();
-  $("dialogFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button class="btn" onclick="dialogIndex++;startDialogTrainer()">Nächsten Dialog</button>';
+  $("dialogFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button class="btn" data-action="nextDialog">Nächsten Dialog</button>';
 }
 
 // Research-based learning engine
@@ -382,14 +409,14 @@ const readItems=[
 let readIndex=0,writeIndex=0;
 function renderReading(){
  const x=readItems[readIndex%readItems.length];
- $("readBody").innerHTML='<div class="tag">'+x.level+'</div><h3>'+x.title+'</h3><p style="line-height:1.65;font-size:17px">'+x.text+'</p><div class="notice">Versuche zuerst die Kernaussage zu verstehen. Unbekannte Wörter müssen nicht sofort nachgeschlagen werden.</div><h3>'+x.q+'</h3><div class="answers">'+x.opts.map((o,i)=>'<button class="answer" onclick="finishReading(this,'+i+')">'+o+'</button>').join("")+'</div><div id="readFeedback" class="feedback"></div>';
+ $("readBody").innerHTML='<div class="tag">'+x.level+'</div><h3>'+x.title+'</h3><p style="line-height:1.65;font-size:17px">'+x.text+'</p><div class="notice">Versuche zuerst die Kernaussage zu verstehen. Unbekannte Wörter müssen nicht sofort nachgeschlagen werden.</div><h3>'+x.q+'</h3><div class="answers">'+x.opts.map((o,i)=>'<button class="answer" data-action="finishReading" data-index="'+i+'">'+o+'</button>').join("")+'</div><div id="readFeedback" class="feedback"></div>';
 }
-function finishReading(btn,i){
+function finishReading(btn,i){if(i==null)i=Number(btn.dataset.index);
  const x=readItems[readIndex%readItems.length],good=i===x.a;
  document.querySelectorAll("#readBody .answer").forEach(b=>b.disabled=true);btn.classList.add(good?"correct":"wrong");
  if(!good)document.querySelectorAll("#readBody .answer").forEach(b=>{if(b.textContent===x.opts[x.a])b.classList.add("correct")});
  recordAttempt(good);if(good){xp+=12;$("xp").textContent=xp}save();
- $("readFeedback").innerHTML='<b>'+(good?"Richtig! 📖":"Nicht ganz.")+'</b><button class="btn" onclick="readIndex++;renderReading()">Weiter</button>';
+ $("readFeedback").innerHTML='<b>'+(good?"Richtig! 📖":"Nicht ganz.")+'</b><button class="btn" data-action="nextReading">Weiter</button>';
 }
 const writeItems=[
  ["Ich heiße Moritz.","Me llamo Moritz."],["Ich studiere Wirtschaftswissenschaften.","Estudio ciencias económicas."],
@@ -399,7 +426,7 @@ const writeItems=[
 ];
 function renderWriting(){
  const x=writeItems[writeIndex%writeItems.length];
- $("writeBody").innerHTML='<div class="tag">Produktion · '+(writeIndex+1)+'/'+writeItems.length+'</div><div class="flash"><div class="de">'+x[0]+'</div></div><input id="writeInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch formulieren"><button class="btn" id="writeCheckBtn" type="button" onclick="finishWriting(event)">Antwort prüfen</button><div id="writeFeedback" class="feedback"></div>';
+ $("writeBody").innerHTML='<div class="tag">Produktion · '+(writeIndex+1)+'/'+writeItems.length+'</div><div class="flash"><div class="de">'+x[0]+'</div></div><input id="writeInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch formulieren"><button class="btn" id="writeCheckBtn" type="button" data-action="finishWriting">Antwort prüfen</button><div id="writeFeedback" class="feedback"></div>';
  $("writeInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();finishWriting(e)}};
 }
 function finishWriting(ev){
@@ -433,16 +460,11 @@ function renderDiagnostic(){
  let i=0,score=0;
  function draw(){
   const q=qs[i];
-  $("diagnosticBody").innerHTML='<div class="tag">Frage '+(i+1)+'/'+qs.length+' · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="answers">'+q[3].map((x,j)=>'<button type="button" class="answer" onclick="diagnosticChoose(this,'+j+')">'+x+'</button>').join("")+'</div><div id="diagnosticFeedback" class="feedback"></div>';
-  document.querySelectorAll("#diagnosticBody .answer").forEach(b=>b.onclick=()=>{
-   document.querySelectorAll("#diagnosticBody .answer").forEach(x=>x.disabled=true);
-   const good=b.textContent===q[2];if(good)score++;b.classList.add(good?"correct":"wrong");
-   if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(x=>{if(x.textContent===q[2])x.classList.add("correct")});
-   $("diagnosticFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button class="btn" onclick="diagnosticNext()">Weiter</button>';
-  });
+  $("diagnosticBody").innerHTML='<div class="tag">Frage '+(i+1)+'/'+qs.length+' · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="answers">'+q[3].map((x,j)=>'<button type="button" class="answer" data-action="diagnosticChoose" data-index="'+j+'">'+x+'</button>').join("")+'</div><div id="diagnosticFeedback" class="feedback"></div>';
+
  }
- window.diagnosticChoose=function(btn,j){const q=qs[i];document.querySelectorAll("#diagnosticBody .answer").forEach(b=>b.disabled=true);const good=j===q[3].indexOf(q[2]);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(b=>{if(b.textContent===q[2])b.classList.add("correct")});if(good)score++;$("diagnosticFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button type="button" class="btn" onclick="diagnosticNext()">Weiter</button>};
-window.diagnosticNext=function(){i++;if(i<qs.length){draw();return}const level=score<=3?"A1":score<=6?"A2":score<=9?"B1":"B2";store.setItem("es_level",level);$("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Ergebnis</div><div class="word">'+level+'</div><p class="small muted">'+score+' von '+qs.length+' richtig. Grobe Lern-Einstufung, kein standardisierter CEFR-Test.</p><button class="btn" onclick="renderDiagnostic()">Einstufung wiederholen</button></div>'};
+ window.diagnosticChoose=function(btn,j){const q=qs[i];document.querySelectorAll("#diagnosticBody .answer").forEach(b=>b.disabled=true);const good=j===q[3].indexOf(q[2]);btn.classList.add(good?"correct":"wrong");if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(b=>{if(b.textContent===q[2])b.classList.add("correct")});if(good)score++;$("diagnosticFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button type="button" class="btn" data-action="diagnosticNext">Weiter</button>};
+window.diagnosticNext=function(){i++;if(i<qs.length){draw();return}const level=score<=3?"A1":score<=6?"A2":score<=9?"B1":"B2";store.setItem("es_level",level);$("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Ergebnis</div><div class="word">'+level+'</div><p class="small muted">'+score+' von '+qs.length+' richtig. Grobe Lern-Einstufung, kein standardisierter CEFR-Test.</p><button class="btn" data-action="renderDiagnostic">Einstufung wiederholen</button></div>'};
  draw();
 }
 function renderProgress(){renderErrorProfile();
@@ -505,7 +527,7 @@ function answerDiagnostic(btn,i){
  btn.classList.add(good?"correct":"wrong");
  if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(b=>{if(b.textContent===x.opts[x.a])b.classList.add("correct")});
  if(good)diagnosticScore++;
- const f=$("diagnosticFeedback");f.innerHTML='<b>'+(good?"Richtig":"Nicht ganz")+'</b><button class="btn" onclick="diagnosticIndex++;renderDiagnostic()">Weiter</button>';
+ const f=$("diagnosticFeedback");f.innerHTML='<b>'+(good?"Richtig":"Nicht ganz")+'</b><button class="btn" data-action="nextDiagnostic">Weiter</button>';
 }
 function getLevel(){return store.getItem("es_level")||"A1"}
 renderHome();
