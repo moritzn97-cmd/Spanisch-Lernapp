@@ -153,10 +153,22 @@ lessons.push(...advancedLessons,
 {id:9,title:"B2 · Argumentieren & Nuancen",level:"B2",words:[["sin duda","zweifellos"],["sin embargo","allerdings"],["a pesar de","trotz"],["por lo tanto","daher"],["plantear","aufwerfen / vorschlagen"],["lograr","erreichen"],["sugerir","vorschlagen"],["destacar","hervorheben"],["entorno","Umfeld"],["consecuencia","Folge"]]},
 {id:10,title:"B2 · Abstrakte Gespräche",level:"B2",words:[["desarrollo","Entwicklung"],["comportamiento","Verhalten"],["enfoque","Ansatz"],["evidencia","Beleg / Evidenz"],["supuesto","Annahme"],["impacto","Auswirkung"],["aprovechar","nutzen"],["planteamiento","Fragestellung / Ansatz"],["alcanzar","erreichen"],["convincente","überzeugend"]]});
 const dialogues=[
-["Im Hotel","— Buenas tardes. Tengo una reserva.\n— ¿A nombre de quién?\n— A nombre de Moritz.\n— Perfecto. Aquí tiene la llave."],
-["Im Restaurant","— Buenas noches. ¿Tiene una mesa para dos?\n— Sí, por supuesto.\n— ¿Nos trae la carta, por favor?\n— Claro."],
-["Am Flughafen","— ¿Dónde está la puerta veinte?\n— Está al final del pasillo.\n— ¿Cuánto tiempo tenemos?\n— Unos treinta minutos."],
-["Im Studium","— ¿Cuándo es el examen?\n— Es el viernes.\n— ¿Has terminado la tarea?\n— Todavía no."]
+["Im Hotel","— Buenas tardes. Tengo una reserva.
+— ¿A nombre de quién?
+— A nombre de Moritz.
+— Perfecto. Aquí tiene la llave."],
+["Im Restaurant","— Buenas noches. ¿Tiene una mesa para dos?
+— Sí, por supuesto.
+— ¿Nos trae la carta, por favor?
+— Claro."],
+["Am Flughafen","— ¿Dónde está la puerta veinte?
+— Está al final del pasillo.
+— ¿Cuánto tiempo tenemos?
+— Unos treinta minutos."],
+["Im Studium","— ¿Cuándo es el examen?
+— Es el viernes.
+— ¿Has terminado la tarea?
+— Todavía no."]
 ];
 function startDialogue(){const d=dialogues[Math.floor(Math.random()*dialogues.length)];$("exercise").innerHTML='<div class="tag">Dialog · '+d[0]+'</div><div style="white-space:pre-line;line-height:1.65;margin-top:15px;font-size:16px">'+d[1]+'</div><div class="sound"><button onclick="speak('+JSON.stringify(d[1])+')">🔊 Dialog anhören</button></div><button class="btn" onclick="startDialogue()">Nächsten Dialog</button>';setTab("learn")}
 
@@ -330,7 +342,8 @@ function renderErrorProfile(){
  if(!el)return;
  el.innerHTML=rows.length?rows.map(([k,v])=>'<div class="small" style="margin:8px 0"><b>'+k.split("::")[0]+'</b> · '+k.split("::")[1]+' — '+v.count+' Fehler</div>').join(""):'<p class="small muted">Noch kein Fehlerprofil vorhanden.</p>';
 }
-\n// ---------- Lernprofil & Startdiagnostik ----------
+
+// ---------- Lernprofil & Startdiagnostik ----------
 const diagnosticItems=[
  {skill:"vocab",level:"A1",q:"¿Dónde está el baño?",opts:["Wo ist die Toilette?","Wie geht es dir?","Was kostet das?","Wo wohnst du?"],a:0},
  {skill:"vocab",level:"A1",q:"Mañana voy a estudiar.",opts:["Morgen werde ich lernen.","Gestern habe ich gelernt.","Ich lerne nie.","Ich habe Hunger."],a:0},
