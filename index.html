@@ -39,21 +39,34 @@ function cardState(es,de){
   return cards[es];
 }
 function updateCard(es,de,good){
-  const c=cardState(es,de), now=Date.now();
-  c.attempts++; if(good)c.correct++; c.lastSeen=now;
-  if(good){
-    c.streak=(c.streak||0)+1;
-    const accuracy=c.correct/c.attempts;
-    c.ease=Math.min(2.8,Math.max(1.5,(c.ease||2.2)+(accuracy>=.8?.08:-.03)));
-    const base=c.interval||0.02;
-    c.interval=Math.min(90, c.streak===1?0.08:base*c.ease);
-  }else{
-    c.streak=0;
-    c.ease=Math.max(1.5,(c.ease||2.2)-.2);
-    c.interval=.02;
-  }
-  c.due=now+c.interval*86400000;
-  cards[es]=c; save();
+ const c=cardState(es,de), now=Date.now();
+ c.attempts++; if(good)c.correct++; c.lastSeen=now;
+ if(good){
+   c.streak=(c.streak||0)+1;
+   const accuracy=c.correct/c.attempts;
+   c.ease=Math.min(2.8,Math.max(1.5,(c.ease||2.2)+(accuracy>=.8?.08:-.03)));
+   const base=c.interval||0.02;
+   c.interval=Math.min(120,c.streak===1?0.08:base*c.ease);
+ }else{
+   c.streak=0;
+   c.ease=Math.max(1.5,(c.ease||2.2)-.2);
+   c.interval=.02;
+   c.reteach=2;
+   recordError("vocab","abruf",es,de);
+ }
+ c.due=now+c.interval*86400000;
+ cards[es]=c; save();
+}
+function markGrammarError(topic){
+ recordError("grammar",topic,"","");
+}
+function needsReteach(es){
+ const c=cards[es];
+ return !!(c&&c.reteach>0);
+}
+function consumeReteach(es){
+ const c=cards[es];
+ if(c&&c.reteach>0){c.reteach--;cards[es]=c;save();}
 }
 function mastery(c){
   if(!c||!c.attempts)return 0;
@@ -62,7 +75,7 @@ function mastery(c){
 function allWords(){return lessons.flatMap(l=>l.words)}
 function practicePool(){
   const all=allWords(), now=Date.now();
-  const due=all.filter(([es,de])=>cardState(es,de).due<=now);
+  const due=all.filter(([es,de])=>cardState(es,de).due<=now || needsReteach(es));
   const weak=all.filter(([es,de])=>{const c=cards[es];return c&&c.due>now&&mastery(c)<65});
   const fresh=all.filter(([es])=>!cards[es]);
   return [...due.sort((a,b)=>cardState(a[0],a[1]).due-cardState(b[0],b[1]).due),
