@@ -108,8 +108,8 @@ function renderRecommendation(){
  el.innerHTML='<div class="card" style="margin-top:12px"><div class="tag">Deine nächste Einheit</div><h3>'+r.label+'</h3><p class="small muted">'+r.detail+'</p><button class="btn" onclick="startAdaptiveSession()">Jetzt 10 Minuten lernen</button></div>';
 }
 function renderHome(){
-let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;
-unlocked=Math.min(unlocked,lessons.length);
+let completed=lessons.filter(l=>Number(progress[l.id]||0)>=l.words.length).length;
+let unlocked=Math.min(completed+1,lessons.length);
 $("lessons").innerHTML=lessons.map(l=>{let p=progress[l.id]||0,lock=l.id>unlocked;return '<div class="lesson '+(lock?"locked":"")+'"><div class="sectiontitle"><h3>'+l.title+'</h3><span class="tag">'+(l.level||"A1")+' · '+p+'/'+l.words.length+'</span></div><div class="bar"><i style="width:'+p/l.words.length*100+'%"></i></div><button class="btn '+(lock?"ghost":"")+'" '+(lock?"disabled":"")+' onclick="startLesson('+l.id+')">'+(lock?"🔒 Gesperrt":p?"Fortsetzen":"Starten")+'</button></div>'}).join("");
 let due=dueCards().length, total=lessons.reduce((a,l)=>a+l.words.length,0),done=Object.values(progress).reduce((a,b)=>a+b,0),pct=Math.round(done/total*100);
 $("todayPct").textContent=(daily.minutes?Math.min(100,Math.round(daily.minutes/12*100)):pct)+"%";
@@ -134,7 +134,7 @@ function renderExercise(){
   if(current>=queue.length){
     if(l){progress[l.id]=Math.max(progress[l.id]||0,Math.min(queue.length,l.words.length));save();}
     $("exercise").innerHTML='<div class="flash"><div class="es">¡Muy bien! 🎉</div><div class="de">Lerneinheit abgeschlossen.</div><p class="small muted">Die nächsten Wiederholungen werden automatisch nach deiner Leistung geplant.</p><button class="btn" id="homeBtn">Zur Übersicht</button></div>';
-    $("homeBtn").onclick=()=>setTab("home");renderHome();return;
+    $("homeBtn").onclick=()=>setTab("home");return;
   }
   answered=false;
   const [es,de]=queue[current],c=cardState(es,de);
