@@ -9,7 +9,7 @@
 <body><main>
 <header class="top"><div class="logo">🇪🇸 Español</div><div class="stats"><span class="pill">🔥 <b id="streak">1</b></span><span class="pill">⭐ <b id="xp">0</b></span></div></header>
 <section class="hero"><h1>¡Hola!</h1><p id="heroText">Dein Spanisch-Training für heute.</p></section>
-<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="speak">🗣️ Sprechen</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button></nav>
+<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="speak">🗣️ Sprechen</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button><button data-tab="read">📖 Lesen</button><button data-tab="write">✍️ Schreiben</button><button data-tab="progress">Fortschritt</button></nav>
 
 <section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card" id="adaptiveInfo"><div class="sectiontitle"><h2>Dein Lernplan</h2><span class="tag">adaptiv</span></div><p class="small muted">Die App priorisiert fällige und unsichere Wörter. Neue Inhalte werden mit Wiederholung gemischt, statt einfach möglichst viel Stoff auf einmal zu zeigen.</p></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: ca. 12 Minuten mit aktivem Abrufen und Wiederholen.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lerneinheit.</p><button class="btn" onclick="startAdaptiveSession()">▶ Empfohlene Einheit starten</button></div></section>
 
@@ -19,6 +19,10 @@
 <section id="dialog" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>💬 Dialogtrainer</h2><span class="tag">Alltag</span></div><p class="muted small">Kurze Situationen mit natürlicher Sprache. Höre, verstehe und wähle eine passende Antwort.</p><div id="dialogBody"></div></div></section>
 <section id="review" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Spaced Repetition</h2><span class="tag" id="dueCount">0 fällig</span></div><p class="muted small">Wörter werden wiederholt, bevor du sie vergisst.</p><div id="reviewBody"></div></div></section>
 <section id="grammar" class="tab hidden"><div class="card"><h2>Grammatik A1</h2><div class="grammar"><b>ser – sein</b><span class="small muted">soy, eres, es, somos, sois, son</span></div><div class="grammar"><b>estar – sich befinden / sein</b><span class="small muted">estoy, estás, está, estamos, estáis, están</span></div><div class="grammar"><b>Artikel</b><span class="small muted">el / la = der / die · un / una = ein / eine</span></div><div class="grammar"><b>Fragen</b><span class="small muted">¿Qué? was · ¿Dónde? wo · ¿Cuándo? wann · ¿Cuánto? wie viel</span></div><button class="btn" onclick="startGrammar()">Grammatik-Quiz starten</button><button class="btn ghost" onclick="startSentence()">🗣️ Satztraining starten</button><button class="btn ghost" onclick="startDialogue()">💬 Dialog üben</button><div class="sound"><button onclick="speak('Hola, ¿cómo estás?')">🔊 Aussprache hören</button></div></div></section>
+<section id="read" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>📖 Lesen</h2><span class="tag">Kontext</span></div><p class="muted small">Lies zuerst für die Gesamtbedeutung. Danach prüfst du dein Verständnis.</p><div id="readBody"></div></div></section>
+<section id="write" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>✍️ Schreiben</h2><span class="tag">Produktion</span></div><p class="muted small">Formuliere selbst, bevor du die Referenz siehst.</p><div id="writeBody"></div></div></section>
+<section id="progress" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Lernfortschritt</h2><span class="tag">Übersicht</span></div><div id="progressBody"></div><button class="btn ghost" onclick="resetProgress()">Fortschritt zurücksetzen</button></div></section>
+</section>
 </main>
 <script>
 const lessons=[
@@ -28,7 +32,7 @@ const lessons=[
 {id:4,title:"Über mich",words:[["me llamo","ich heiße"],["vivo","ich wohne"],["estudio","ich studiere"],["trabajo","ich arbeite"],["familia","Familie"],["edad","Alter"],["gustar","gefallen"],["también","auch"]]}
 ];
 let xp=+localStorage.getItem("es_xp")||0,streak=+localStorage.getItem("es_streak")||1,progress=JSON.parse(localStorage.getItem("es_progress")||"{}"),cards=JSON.parse(localStorage.getItem("es_cards")||"{}"),currentLesson=1,current=0,queue=[],answered=false;
-const SCHEDULE=[0.02,0.08,0.5,1,3,7,14,30,60];
+const SCHEDULE=[0.02,0.08,0.5,1,3,7,14,30,60,120];
 function cardState(es,de){
   if(!cards[es]) cards[es]={de,attempts:0,correct:0,streak:0,interval:0.02,ease:2.2,due:Date.now(),lastSeen:0};
   if(!cards[es].de) cards[es].de=de;
@@ -71,7 +75,7 @@ function sessionWords(){
 }
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){localStorage.setItem("es_xp",xp);localStorage.setItem("es_streak",streak);localStorage.setItem("es_progress",JSON.stringify(progress));localStorage.setItem("es_cards",JSON.stringify(cards))}
-function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer()}
+function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer();if(id==="read")renderReading();if(id==="write")renderWriting();if(id==="progress")renderProgress()}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 function renderHome(){
 let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;
@@ -146,7 +150,9 @@ const advancedLessons=[
 {id:7,title:"B1 · Arbeit & Studium",level:"B1",words:[["reunión","Besprechung"],["experiencia","Erfahrung"],["proyecto","Projekt"],["empresa","Unternehmen"],["entrevista","Vorstellungsgespräch"],["asignatura","Studienfach"],["examen","Prüfung"],["tarea","Aufgabe"],["objetivo","Ziel"],["futuro","Zukunft"]]},
 {id:8,title:"B1 · Meinungen & Alltag",level:"B1",words:[["opinión","Meinung"],["decisión","Entscheidung"],["problema","Problem"],["solución","Lösung"],["quizás","vielleicht"],["aunque","obwohl"],["sin embargo","jedoch"],["porque","weil"],["por eso","deshalb"],["depender","abhängen"]]}
 ];
-lessons.push(...advancedLessons);
+lessons.push(...advancedLessons,
+{id:9,title:"B2 · Argumentieren & Nuancen",level:"B2",words:[["sin duda","zweifellos"],["sin embargo","allerdings"],["a pesar de","trotz"],["por lo tanto","daher"],["plantear","aufwerfen / vorschlagen"],["lograr","erreichen"],["sugerir","vorschlagen"],["destacar","hervorheben"],["entorno","Umfeld"],["consecuencia","Folge"]]},
+{id:10,title:"B2 · Abstrakte Gespräche",level:"B2",words:[["desarrollo","Entwicklung"],["comportamiento","Verhalten"],["enfoque","Ansatz"],["evidencia","Beleg / Evidenz"],["supuesto","Annahme"],["impacto","Auswirkung"],["aprovechar","nutzen"],["planteamiento","Fragestellung / Ansatz"],["alcanzar","erreichen"],["convincente","überzeugend"]]});
 const dialogues=[
 ["Im Hotel","— Buenas tardes. Tengo una reserva.\n— ¿A nombre de quién?\n— A nombre de Moritz.\n— Perfecto. Aquí tiene la llave."],
 ["Im Restaurant","— Buenas noches. ¿Tiene una mesa para dos?\n— Sí, por supuesto.\n— ¿Nos trae la carta, por favor?\n— Claro."],
@@ -263,4 +269,46 @@ function dueCards(){return Object.entries(cards).filter(([k,v])=>v.due<=Date.now
 function choosePractice(){const due=dueCards();if(due.length)return {type:"review",count:due.length};return {type:"new",count:Math.max(0,10-(daily.attempts||0))}}
 function researchSummary(){return '<div class="card"><h2>Warum diese App so lernt</h2><p class="small muted">Die Übungen kombinieren aktives Abrufen, verteilte Wiederholung, Kontext, unmittelbares Feedback und zunehmende Sprachproduktion. Das Ziel ist langfristige Behaltensleistung statt möglichst vieler Punkte.</p></div>'}
 renderHome();
+
+// Lesen: Verständnis vor Wort-für-Wort-Übersetzung
+const readItems=[
+ {level:"A1",title:"Ein Morgen",text:"Hola. Me llamo Ana y vivo en Madrid. Por la mañana tomo un café y voy a la universidad.",q:"Wo lebt Ana?",opts:["Madrid","Barcelona","Valencia","Sevilla"],a:0},
+ {level:"A2",title:"Eine Reise",text:"El sábado viajé a Sevilla. Llegué por la mañana y dejé mi equipaje en el hotel. Por la tarde visité el centro.",q:"Was geschah mit dem Gepäck?",opts:["Es blieb im Hotel.","Es ging ins Restaurant.","Es wurde verloren.","Es wurde nach Hause geschickt."],a:0},
+ {level:"B1",title:"Lernen",text:"Aprender un idioma no consiste solamente en memorizar palabras. Es importante encontrar las palabras en diferentes contextos y utilizarlas activamente.",q:"Was wird zusätzlich zum Memorieren betont?",opts:["Verschiedene Kontexte und aktive Verwendung.","Nur Grammatik.","Nur Filme.","Immer dieselbe Übung."],a:0},
+ {level:"B2",title:"Digitale Lernhilfe",text:"Una aplicación puede adaptar la práctica al rendimiento de cada persona. Sin embargo, la tecnología no sustituye la necesidad de comprender textos, escuchar lenguaje real y producir la lengua.",q:"Welche Einschränkung wird genannt?",opts:["Technologie ersetzt nicht Verstehen, Hören und Produktion.","Technologie ist nutzlos.","Nur Vokabeln zählen.","Nur Unterricht funktioniert."],a:0}
+];
+let readIndex=0,writeIndex=0;
+function renderReading(){
+ const x=readItems[readIndex%readItems.length];
+ $("readBody").innerHTML='<div class="tag">'+x.level+'</div><h3>'+x.title+'</h3><p style="line-height:1.65;font-size:17px">'+x.text+'</p><div class="notice">Versuche zuerst die Kernaussage zu verstehen. Unbekannte Wörter müssen nicht sofort nachgeschlagen werden.</div><h3>'+x.q+'</h3><div class="answers">'+x.opts.map((o,i)=>'<button class="answer" onclick="finishReading(this,'+i+')">'+o+'</button>').join("")+'</div><div id="readFeedback" class="feedback"></div>';
+}
+function finishReading(btn,i){
+ const x=readItems[readIndex%readItems.length],good=i===x.a;
+ document.querySelectorAll("#readBody .answer").forEach(b=>b.disabled=true);btn.classList.add(good?"correct":"wrong");
+ if(!good)document.querySelectorAll("#readBody .answer").forEach(b=>{if(b.textContent===x.opts[x.a])b.classList.add("correct")});
+ recordAttempt(good);if(good){xp+=12;$("xp").textContent=xp}save();
+ $("readFeedback").innerHTML='<b>'+(good?"Richtig! 📖":"Nicht ganz.")+'</b><button class="btn" onclick="readIndex++;renderReading()">Weiter</button>';
+}
+const writeItems=[
+ ["Ich heiße Moritz.","Me llamo Moritz."],["Ich studiere Wirtschaftswissenschaften.","Estudio ciencias económicas."],
+ ["Wo ist der Bahnhof?","¿Dónde está la estación?"],["Ich hätte gern einen Kaffee.","Quisiera un café."],
+ ["Morgen habe ich eine Prüfung.","Mañana tengo un examen."],["Ich brauche eine Reservierung.","Necesito una reserva."],
+ ["Ich bin der Meinung, dass das wichtig ist.","Creo que eso es importante."]
+];
+function renderWriting(){
+ const x=writeItems[writeIndex%writeItems.length];
+ $("writeBody").innerHTML='<div class="tag">Produktion · '+(writeIndex+1)+'/'+writeItems.length+'</div><div class="flash"><div class="de">'+x[0]+'</div></div><input id="writeInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch formulieren"><button class="btn" onclick="finishWriting()">Antwort prüfen</button><div id="writeFeedback" class="feedback"></div>';
+ $("writeInput").onkeydown=e=>{if(e.key==="Enter")finishWriting()};
+}
+function finishWriting(){
+ const x=writeItems[writeIndex%writeItems.length],value=$("writeInput").value,good=normalize(value)===normalize(x[1]);
+ $("writeInput").disabled=true;recordAttempt(good);if(good){xp+=18;$("xp").textContent=xp}save();
+ $("writeFeedback").innerHTML='<b>'+(good?"Sehr gut! ✍️":"Vergleiche mit der Referenz und versuche es erneut.")+'</b><div class="small">Referenz: '+x[1]+'</div><button class="btn" onclick="writeIndex++;renderWriting()">Weiter</button>';
+}
+function renderProgress(){
+ const all=lessons.flatMap(l=>l.words),seen=all.filter(([es])=>cards[es]),mastered=seen.filter(([es])=>mastery(cards[es])>=75);
+ const acc=daily.attempts?Math.round(daily.correct/daily.attempts*100):0;
+ $("progressBody").innerHTML='<div class="row"><span>Wörter gelernt</span><b>'+seen.length+'/'+all.length+'</b></div><div class="row"><span>Stabil beherrscht</span><b>'+mastered.length+'</b></div><div class="row"><span>Heute Trefferquote</span><b>'+acc+'%</b></div><div class="row"><span>Heute Lernzeit</span><b>'+daily.minutes.toFixed(1)+' min</b></div><div class="notice">Diese Werte sind Trainingsindikatoren, keine standardisierten CEFR-Prüfwerte. Der nächste Lernschritt richtet sich primär nach Abrufleistung und Wiederholungsfälligkeit.</div>';
+}
+function resetProgress(){if(confirm("Wirklich alle Lernfortschritte auf diesem Gerät löschen?")){localStorage.removeItem("es_xp");localStorage.removeItem("es_streak");localStorage.removeItem("es_progress");localStorage.removeItem("es_cards");localStorage.removeItem("es_daily");location.reload()}}
 </script></body></html>
