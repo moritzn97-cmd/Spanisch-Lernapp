@@ -191,7 +191,7 @@ function startGrammar(){
   const good=b.textContent===q[2];
   b.classList.add(good?"correct":"wrong");
   if(!good)document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===q[2])x.classList.add("correct")});
-  markGrammarError(good?"":"Grammatik · "+q[0]);
+  recordAttempt(good);if(!good)markGrammarError("Grammatik · "+q[0]);
   $("feedback").innerHTML='<b>'+(good?"Richtig!":"Noch einmal.")+'</b><div class="small">Lösung: '+q[2]+'</div><button class="btn" onclick="startGrammar()">Nächste Aufgabe</button>';
  });
 }
