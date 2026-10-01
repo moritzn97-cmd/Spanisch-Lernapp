@@ -324,6 +324,7 @@ function answerListening(btn,index,correctIndex){
   if(btn.parentElement.dataset.done)return;
   btn.parentElement.dataset.done="1";
   const good=index===correctIndex;
+  recordAttempt(good);
   btn.classList.add(good?"correct":"wrong");
   btn.parentElement.querySelectorAll(".answer").forEach(b=>b.disabled=true);
   const x=listeningItems[listeningIndex%listeningItems.length];
