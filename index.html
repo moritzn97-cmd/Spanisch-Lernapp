@@ -148,7 +148,7 @@ function renderExercise(){
   }else{
     let opts=[de];while(opts.length<4){const x=queue[Math.floor(Math.random()*queue.length)][1];if(!opts.includes(x))opts.push(x)}
     opts.sort(()=>Math.random()-.5);
-    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" onclick="answer(this,\''+es.replace(/'/g,"&#39;")+'\',\''+x.replace(/'/g,"&#39;")+'\')">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';
+    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" onclick="answer(this,\''+es.replace(/'/g,"&#39;")+'\',\''+x.replace(/'/g,"&#39;")+'\')">'+x+'</button>').join("")+'</div><div id="exerciseFeedback" class="feedback"></div>';
     
   }
 }
@@ -505,7 +505,7 @@ function answerDiagnostic(btn,i){
  btn.classList.add(good?"correct":"wrong");
  if(!good)document.querySelectorAll("#diagnosticBody .answer").forEach(b=>{if(b.textContent===x.opts[x.a])b.classList.add("correct")});
  if(good)diagnosticScore++;
- const f=$("diagFeedback");f.innerHTML='<b>'+(good?"Richtig":"Nicht ganz")+'</b><button class="btn" onclick="diagnosticIndex++;renderDiagnostic()">Weiter</button>';
+ const f=$("diagnosticFeedback");f.innerHTML='<b>'+(good?"Richtig":"Nicht ganz")+'</b><button class="btn" onclick="diagnosticIndex++;renderDiagnostic()">Weiter</button>';
 }
 function getLevel(){return store.getItem("es_level")||"A1"}
 renderHome();
