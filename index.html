@@ -333,6 +333,18 @@ function recordError(skill,kind,es,de){
  if(es&&!errorProfile[k].examples.includes(es))errorProfile[k].examples=errorProfile[k].examples.slice(-4).concat(es);
  localStorage.setItem("es_errors",JSON.stringify(errorProfile));
 }
+function errorWeight(es,de,skill){
+ const c=cards[es], k=skill+"::"+(skill==="grammar"?"grammar":"vocab"), e=errorProfile[k]?.count||0;
+ const weak=c&&c.attempts?Math.max(0,1-mastery(c)/100):0.7;
+ return e*2+weak;
+}
+function adaptiveMix(items){
+ return [...items].sort((a,b)=>{
+   const wa=errorWeight(a[0],a[1],"vocab")+(Math.random()*.15);
+   const wb=errorWeight(b[0],b[1],"vocab")+(Math.random()*.15);
+   return wb-wa;
+ }).slice(0,12);
+}
 function errorSummary(){
  return Object.entries(errorProfile).sort((a,b)=>b[1].count-a[1].count).slice(0,5);
 }
