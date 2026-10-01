@@ -88,7 +88,7 @@ $("todayMsg").textContent=due?due+" Wiederholungen warten auf dich.":daily.minut
 }
 function startLesson(id){
   currentLesson=id;
-  const base=lessons.find(l=>l.id===id).words;
+    $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn">Antwort prüfen</button><div id="feedback" class="feedback"></div>'; $("recallBtn").onclick=checkRecall;
   const now=Date.now();
   const due=base.filter(([es,de])=>cardState(es,de).due<=now);
   const weak=base.filter(([es,de])=>{const x=cards[es];return x&&x.due>now&&mastery(x)<65});
@@ -115,7 +115,7 @@ function renderExercise(){
   $("lessonTag").textContent=(l?((l.level||"A1")+" · "+l.title):"Adaptives Training");
   if(recall){
     $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button class="btn" onclick="checkRecall(\\''+es.replace(/'/g,"\\\\'")+\\',\\''+de.replace(/'/g,"\\\\'")+\\')">Antwort prüfen</button><div id="feedback" class="feedback"></div>';
-    $("recallInput").focus();
+function startSentence(){const qs=[["Ich heiße Moritz.","Me llamo Moritz."],["Ich studiere Spanisch.","Estudio español."],["Wo ist der Bahnhof?","¿Dónde está die estación?"],["Ich hätte gern einen Kaffee.","Quisiera un café."],["Wie viel kostet das?","¿Cuánto cuesta?"],["Ich wohne in Deutschland.","Vivo en Alemania."]];const q=qs[Math.floor(Math.random()*qs.length)];let a=[q[1]];while(a.length<4){const x=qs[Math.floor(Math.random()*qs.length)][1];if(!a.includes(x))a.push(x)}a.sort(()=>Math.random()-.5);$("exercise").innerHTML='<div class="tag">Satztraining</div><div class="word" style="font-size:25px">'+q[0]+'</div><div class="hint">Welche Übersetzung ist richtig?</div><div class="answers">'+a.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div class="sound"><button id="sentenceSpeak">🔊 Spanisch anhören</button></div>';document.getElementById("sentenceSpeak").onclick=()=>speak(q[1]);document.querySelectorAll("#exercise .answer").forEach(b=>b.onclick=()=>{document.querySelectorAll("#exercise .answer").forEach(x=>x.disabled=true);const ok=b.textContent===q[1];b.classList.add(ok?"correct":"wrong");if(ok){xp+=15;$("xp").textContent=xp;save()}});setTab("learn")}
     $("recallInput").addEventListener("keydown",ev=>{if(ev.key==="Enter")checkRecall(es,de)});
   }else{
     let opts=[de];while(opts.length<4){let x=queue[Math.floor(Math.random()*queue.length)][1];if(!opts.includes(x))opts.push(x)}
