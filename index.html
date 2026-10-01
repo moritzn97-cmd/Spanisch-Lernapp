@@ -153,22 +153,22 @@ lessons.push(...advancedLessons,
 {id:9,title:"B2 · Argumentieren & Nuancen",level:"B2",words:[["sin duda","zweifellos"],["sin embargo","allerdings"],["a pesar de","trotz"],["por lo tanto","daher"],["plantear","aufwerfen / vorschlagen"],["lograr","erreichen"],["sugerir","vorschlagen"],["destacar","hervorheben"],["entorno","Umfeld"],["consecuencia","Folge"]]},
 {id:10,title:"B2 · Abstrakte Gespräche",level:"B2",words:[["desarrollo","Entwicklung"],["comportamiento","Verhalten"],["enfoque","Ansatz"],["evidencia","Beleg / Evidenz"],["supuesto","Annahme"],["impacto","Auswirkung"],["aprovechar","nutzen"],["planteamiento","Fragestellung / Ansatz"],["alcanzar","erreichen"],["convincente","überzeugend"]]});
 const dialogues=[
-["Im Hotel","— Buenas tardes. Tengo una reserva.
+["Im Hotel",`— Buenas tardes. Tengo una reserva.
 — ¿A nombre de quién?
 — A nombre de Moritz.
-— Perfecto. Aquí tiene la llave."],
-["Im Restaurant","— Buenas noches. ¿Tiene una mesa para dos?
+— Perfecto. Aquí tiene la llave.`],
+["Im Restaurant",`— Buenas noches. ¿Tiene una mesa para dos?
 — Sí, por supuesto.
 — ¿Nos trae la carta, por favor?
-— Claro."],
-["Am Flughafen","— ¿Dónde está la puerta veinte?
+— Claro.`],
+["Am Flughafen",`— ¿Dónde está la puerta veinte?
 — Está al final del pasillo.
 — ¿Cuánto tiempo tenemos?
-— Unos treinta minutos."],
-["Im Studium","— ¿Cuándo es el examen?
+— Unos treinta minutos.`],
+["Im Studium",`— ¿Cuándo es el examen?
 — Es el viernes.
 — ¿Has terminado la tarea?
-— Todavía no."]
+— Todavía no.`]
 ];
 function startDialogue(){const d=dialogues[Math.floor(Math.random()*dialogues.length)];$("exercise").innerHTML='<div class="tag">Dialog · '+d[0]+'</div><div style="white-space:pre-line;line-height:1.65;margin-top:15px;font-size:16px">'+d[1]+'</div><div class="sound"><button onclick="speak('+JSON.stringify(d[1])+')">🔊 Dialog anhören</button></div><button class="btn" onclick="startDialogue()">Nächsten Dialog</button>';setTab("learn")}
 
