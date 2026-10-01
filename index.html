@@ -376,8 +376,6 @@ function recordAttempt(ok){daily.attempts++;if(ok)daily.correct++;daily.minutes=
 function dueCards(){return Object.entries(cards).filter(([k,v])=>v.due<=Date.now()).sort((a,b)=>a[1].due-b[1].due)}
 function choosePractice(){const due=dueCards();if(due.length)return {type:"review",count:due.length};return {type:"new",count:Math.max(0,10-(daily.attempts||0))}}
 function researchSummary(){return '<div class="card"><h2>Warum diese App so lernt</h2><p class="small muted">Die Übungen kombinieren aktives Abrufen, verteilte Wiederholung, Kontext, unmittelbares Feedback und zunehmende Sprachproduktion. Das Ziel ist langfristige Behaltensleistung statt möglichst vieler Punkte.</p></div>'}
-renderHome();
-
 // Lesen: Verständnis vor Wort-für-Wort-Übersetzung
 const readItems=[
  {level:"A1",title:"Ein Morgen",text:"Hola. Me llamo Ana y vivo en Madrid. Por la mañana tomo un café y voy a la universidad.",q:"Wo lebt Ana?",opts:["Madrid","Barcelona","Valencia","Sevilla"],a:0},
