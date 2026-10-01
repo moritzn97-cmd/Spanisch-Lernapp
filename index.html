@@ -143,7 +143,8 @@ function renderExercise(){
   $("lessonTag").textContent=l?((l.level||"A1")+" · "+l.title):"Adaptives Training";
   if(recall){
     $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn">Antwort prüfen</button><div id="feedback" class="feedback"></div>';
-    $("recallBtn").onclick=checkRecall;
+    $("recallBtn").type="button";
+    $("recallBtn").addEventListener("click",function(ev){ev.preventDefault();checkRecall(ev)});
     $("recallInput").focus();
     $("recallInput").addEventListener("keydown",ev=>{if(ev.key==="Enter")checkRecall()});
   }else{
@@ -153,7 +154,9 @@ function renderExercise(){
     document.querySelectorAll("#exercise .answer").forEach(b=>b.onclick=()=>answer(b,es,de));
   }
 }
-function checkRecall(){const [es,de]=queue[current];
+function checkRecall(ev){
+ if(ev)ev.preventDefault();
+ const [es,de]=queue[current];
   if(answered)return;
   answered=true;
   const input=$("recallInput"),good=normalize(input.value)===normalize(es);
@@ -216,7 +219,8 @@ function startSentence(){
  const q=qs[Math.floor(Math.random()*qs.length)];
  $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio">🔊 Lösung anhören</button></div>';
  $("solutionAudio").onclick=()=>speak(q[2]);
- $("sentenceBtn").onclick=(ev)=>{ev.preventDefault();checkSentence(q[2])};
+ $("sentenceBtn").type="button";
+ $("sentenceBtn").addEventListener("click",function(ev){ev.preventDefault();checkSentence(q[2])});
  $("sentenceInput").focus();
  $("sentenceInput").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();checkSentence(q[2])}});
  setTab("learn");
