@@ -512,4 +512,6 @@ function answerDiagnostic(btn,i){
  const f=$("diagFeedback");f.innerHTML='<b>'+(good?"Richtig":"Nicht ganz")+'</b><button class="btn" onclick="diagnosticIndex++;renderDiagnostic()">Weiter</button>';
 }
 function getLevel(){return store.getItem("es_level")||"A1"}
+renderHome();
+
 </script></body></html>
