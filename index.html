@@ -298,13 +298,12 @@ function startRecognition(){
 }
 function evaluateSpeech(heard){
  const x=speakingItems[speakingIndex%speakingItems.length];
- const a=normalize(heard),b=normalize(x.es);
- const wordsA=a.split(" "),wordsB=b.split(" ");
- const overlap=wordsB.filter(w=>wordsA.includes(w)).length/Math.max(wordsB.length,1);
- const good=a===b||overlap>=.75;
+ const a=normalize(heard),b=normalize(x.es),wordsA=a.split(" "),wordsB=b.split(" ");
+ const overlap=wordsB.filter(w=>wordsA.includes(w)).length/Math.max(wordsB.length,1),good=a===b||overlap>=.75;
+ recordAttempt(good);if(!good)recordError("speaking","satz",x.es,"");
  if(good){xp+=20;$("xp").textContent=xp}
  $("speechStatus").textContent=good?"Gut erkannt!":"Noch einmal versuchen.";
- $("speechResult").innerHTML='<div class="small">Erkannt: <b>'+heard+'</b></div><div class="small">Referenz: <b>'+x.es+'</b></div><div class="small muted">Hinweis: Die Browser-Erkennung ist nur ein grober Vergleich und keine zuverlässige Aussprachebewertung.</div><button class="btn" onclick="nextSpeaking()">Nächster Satz</button>';
+ $("speechResult").innerHTML='<div class="small">Erkannt: <b>'+heard+'</b></div><div class="small">Referenz: <b>'+x.es+'</b></div><div class="small muted">Hinweis: Die Browser-Erkennung ist nur ein grober Textvergleich und keine zuverlässige Aussprachebewertung.</div><button class="btn" onclick="nextSpeaking()">Nächster Satz</button>';
  save();
 }
 function showSpeakingAnswer(){
