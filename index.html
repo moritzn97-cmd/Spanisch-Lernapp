@@ -9,11 +9,13 @@
 <body><main>
 <header class="top"><div class="logo">🇪🇸 Español</div><div class="stats"><span class="pill">🔥 <b id="streak">1</b></span><span class="pill">⭐ <b id="xp">0</b></span></div></header>
 <section class="hero"><h1>¡Hola!</h1><p id="heroText">Dein Spanisch-Training für heute.</p></section>
-<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button></nav>
+<nav class="nav"><button class="active" data-tab="home">Start</button><button data-tab="learn">Lernen</button><button data-tab="listen">🎧 Hören</button><button data-tab="dialog">💬 Dialog</button><button data-tab="review">Wiederholen</button><button data-tab="grammar">Grammatik</button></nav>
 
 <section id="home" class="tab"><div class="card"><div class="sectiontitle"><h2>Dein Kurs</h2><span class="tag">A1</span></div><p class="muted small">Beginne mit den wichtigsten Grundlagen.</p><div id="lessons"></div></div><div class="card" id="adaptiveInfo"><div class="sectiontitle"><h2>Dein Lernplan</h2><span class="tag">adaptiv</span></div><p class="small muted">Die App priorisiert fällige und unsichere Wörter. Neue Inhalte werden mit Wiederholung gemischt, statt einfach möglichst viel Stoff auf einmal zu zeigen.</p></div><div class="card"><div class="sectiontitle"><h2>Heute</h2><span id="todayPct" class="tag">0%</span></div><p class="muted small">Ziel: ca. 12 Minuten mit aktivem Abrufen und Wiederholen.</p><div class="bar"><i id="todayBar" style="width:0%"></i></div><p id="todayMsg" class="small">Starte eine Lerneinheit.</p><button class="btn" onclick="startAdaptiveSession()">▶ Empfohlene Einheit starten</button></div></section>
 
 <section id="learn" class="tab hidden"><div class="card"><div class="sectiontitle"><span class="tag" id="lessonTag">A1</span><span class="small muted" id="counter"></span></div><div id="exercise"></div></div></section>
+<section id="listen" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>🎧 Hörverständnis</h2><span class="tag">A1–B1</span></div><p class="muted small">Höre zuerst ohne mitzulesen und entscheide dann, was du verstanden hast.</p><div id="listenBody"></div></div></section>
+<section id="dialog" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>💬 Dialogtrainer</h2><span class="tag">Alltag</span></div><p class="muted small">Kurze Situationen mit natürlicher Sprache. Höre, verstehe und wähle eine passende Antwort.</p><div id="dialogBody"></div></div></section>
 <section id="review" class="tab hidden"><div class="card"><div class="sectiontitle"><h2>Spaced Repetition</h2><span class="tag" id="dueCount">0 fällig</span></div><p class="muted small">Wörter werden wiederholt, bevor du sie vergisst.</p><div id="reviewBody"></div></div></section>
 <section id="grammar" class="tab hidden"><div class="card"><h2>Grammatik A1</h2><div class="grammar"><b>ser – sein</b><span class="small muted">soy, eres, es, somos, sois, son</span></div><div class="grammar"><b>estar – sich befinden / sein</b><span class="small muted">estoy, estás, está, estamos, estáis, están</span></div><div class="grammar"><b>Artikel</b><span class="small muted">el / la = der / die · un / una = ein / eine</span></div><div class="grammar"><b>Fragen</b><span class="small muted">¿Qué? was · ¿Dónde? wo · ¿Cuándo? wann · ¿Cuánto? wie viel</span></div><button class="btn" onclick="startGrammar()">Grammatik-Quiz starten</button><button class="btn ghost" onclick="startSentence()">🗣️ Satztraining starten</button><button class="btn ghost" onclick="startDialogue()">💬 Dialog üben</button><div class="sound"><button onclick="speak('Hola, ¿cómo estás?')">🔊 Aussprache hören</button></div></div></section>
 </main>
@@ -68,7 +70,7 @@ function sessionWords(){
 }
 const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textContent=streak;
 function save(){localStorage.setItem("es_xp",xp);localStorage.setItem("es_streak",streak);localStorage.setItem("es_progress",JSON.stringify(progress));localStorage.setItem("es_cards",JSON.stringify(cards))}
-function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview()}
+function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="dialog")startDialogTrainer()}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 function renderHome(){
 let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;
@@ -151,6 +153,55 @@ const dialogues=[
 ["Im Studium","— ¿Cuándo es el examen?\n— Es el viernes.\n— ¿Has terminado la tarea?\n— Todavía no."]
 ];
 function startDialogue(){const d=dialogues[Math.floor(Math.random()*dialogues.length)];$("exercise").innerHTML='<div class="tag">Dialog · '+d[0]+'</div><div style="white-space:pre-line;line-height:1.65;margin-top:15px;font-size:16px">'+d[1]+'</div><div class="sound"><button onclick="speak('+JSON.stringify(d[1])+')">🔊 Dialog anhören</button></div><button class="btn" onclick="startDialogue()">Nächsten Dialog</button>';setTab("learn")}
+
+
+// Listening + dialog training
+const listeningItems=[
+  {id:"l1",es:"Hola, ¿cómo estás?",de:"Hallo, wie geht es dir?",options:["Hallo, wie geht es dir?","Wo wohnst du?","Was möchtest du essen?","Wie viel kostet das?"]},
+  {id:"l2",es:"Quiero un café, por favor.",de:"Ich möchte einen Kaffee, bitte.",options:["Ich möchte einen Kaffee, bitte.","Ich möchte ein Wasser, bitte.","Ich habe keinen Kaffee.","Wo ist das Café?"]},
+  {id:"l3",es:"¿Dónde está la estación?",de:"Wo ist der Bahnhof?",options:["Wo ist der Bahnhof?","Wann fährt der Zug?","Wo ist das Hotel?","Wie heißt der Bahnhof?"]},
+  {id:"l4",es:"Mañana tengo un examen.",de:"Morgen habe ich eine Prüfung.",options:["Morgen habe ich eine Prüfung.","Heute arbeite ich.","Morgen fahre ich nach Hause.","Ich habe keine Prüfung."]},
+  {id:"l5",es:"Ayer fui al cine con mis amigos.",de:"Gestern war ich mit meinen Freunden im Kino.",options:["Gestern war ich mit meinen Freunden im Kino.","Morgen gehe ich mit meinen Freunden ins Kino.","Gestern habe ich zu Hause gelernt.","Ich gehe allein ins Kino."]}
+];
+const dialogueItems=[
+  {title:"☕ Café",lines:[["app","Buenos días. ¿Qué quieres tomar?"],["user","Quiero un café con leche, por favor."],["app","¿Algo más?"],["user","No, gracias. Eso es todo."]],question:"Was möchtest du bestellen?",options:["Einen Kaffee mit Milch","Ein Bier","Ein Sandwich","Eine Flasche Wasser"],correct:0},
+  {title:"🏨 Hotel",lines:[["app","Buenas tardes. ¿Tiene una reserva?"],["user","Sí, a nombre de Moritz."],["app","Perfecto. ¿Me puede enseñar el pasaporte?"],["user","Sí, aquí tiene."]],question:"Was möchte die Rezeption sehen?",options:["Den Reisepass","Die Fahrkarte","Die Speisekarte","Den Koffer"],correct:0},
+  {title:"✈️ Flughafen",lines:[["app","¿Dónde está la puerta veinte?"],["user","Está al final del pasillo."],["app","Gracias. ¿Cuánto tiempo tenemos?"],["user","Unos treinta minutos."]],question:"Wie viel Zeit haben sie ungefähr?",options:["30 Minuten","10 Minuten","Eine Stunde","Zwei Stunden"],correct:0},
+  {title:"🎓 Universität",lines:[["app","¿Cuándo es el examen?"],["user","Es el viernes."],["app","¿Has terminado la tarea?"],["user","Todavía no."]],question:"Wann ist die Prüfung?",options:["Am Freitag","Am Montag","Heute","Morgen"],correct:0}
+];
+let listeningIndex=0,dialogIndex=0;
+function speakText(t,rate=.82){if(!("speechSynthesis"in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=rate;speechSynthesis.speak(u)}
+function startListening(){
+  const x=listeningItems[listeningIndex%listeningItems.length];
+  $("listenBody").innerHTML='<div class="tag">Hören · '+(listeningIndex+1)+'/'+listeningItems.length+'</div><div class="flash"><div class="es">🔊</div><div class="de">Höre den Satz an, ohne mitzulesen.</div><button class="btn" onclick="speakText('+JSON.stringify(x.es)+',.72)">Langsam anhören</button><button class="btn ghost" onclick="speakText('+JSON.stringify(x.es)+',.92)">Normal anhören</button></div><div class="hint" style="margin-top:16px">Was hast du verstanden?</div><div class="answers">'+x.options.map((o,i)=>'<button class="answer" onclick="answerListening(this,'+i+','+x.options.indexOf(x.de)+')">'+o+'</button>').join("")+'</div><div id="listenFeedback" class="feedback"></div>';
+}
+function answerListening(btn,index,correctIndex){
+  if(btn.parentElement.dataset.done)return;
+  btn.parentElement.dataset.done="1";
+  const good=index===correctIndex;
+  btn.classList.add(good?"correct":"wrong");
+  btn.parentElement.querySelectorAll(".answer").forEach(b=>b.disabled=true);
+  const x=listeningItems[listeningIndex%listeningItems.length];
+  if(!cards["[listen]"+x.es])cards["[listen]"+x.es]={de:x.de,attempts:0,correct:0,streak:0,interval:.02,ease:2.2,due:Date.now()};
+  const st=cards["[listen]"+x.es];st.attempts++;if(good)st.correct++;st.streak=good?(st.streak||0)+1:0;st.due=Date.now()+(good?Math.min(14,(st.interval||.02)*2.2):.02)*86400000;st.interval=good?Math.min(14,(st.interval||.02)*2.2):.02;save();
+  if(good){xp+=12;$("xp").textContent=xp}
+  $("listenFeedback").innerHTML='<b>'+(good?"Richtig! 🎧":"Noch einmal hören.")+'</b><div class="small">'+x.es+' = '+x.de+'</div><button class="btn" onclick="nextListening()">Weiter</button>';
+}
+function nextListening(){listeningIndex++;startListening()}
+function startDialogTrainer(){
+  const d=dialogueItems[dialogIndex%dialogueItems.length];
+  $("dialogBody").innerHTML='<div class="tag">'+d.title+'</div><div style="margin-top:14px">'+d.lines.map(l=>'<div class="row"><span><b>'+(l[0]==="app"?"🇪🇸 App":"🗣️ Du")+'</b><br>'+l[1]+'</span><button class="ghost" style="border:0;border-radius:10px;padding:8px" onclick="speakText('+JSON.stringify(l[1])+',.82)">🔊</button></div>').join("")+'</div><button class="btn" onclick="dialogQuestion()">Verständnis prüfen</button>';
+}
+function dialogQuestion(){
+  const d=dialogueItems[dialogIndex%dialogueItems.length];
+  $("dialogBody").innerHTML='<div class="tag">'+d.title+'</div><h3>'+d.question+'</h3><div class="answers">'+d.options.map((o,i)=>'<button class="answer" onclick="finishDialog(this,'+i+')">'+o+'</button>').join("")+'</div><div id="dialogFeedback" class="feedback"></div>';
+}
+function finishDialog(btn,i){
+  const d=dialogueItems[dialogIndex%dialogueItems.length],good=i===d.correct;
+  document.querySelectorAll("#dialogBody .answer").forEach(b=>b.disabled=true);btn.classList.add(good?"correct":"wrong");
+  if(good){xp+=15;$("xp").textContent=xp}
+  $("dialogFeedback").innerHTML='<b>'+(good?"Richtig!":"Nicht ganz.")+'</b><button class="btn" onclick="dialogIndex++;startDialogTrainer()">Nächsten Dialog</button>';
+}
 
 // Research-based learning engine
 const LEARN_MINUTES=12;
