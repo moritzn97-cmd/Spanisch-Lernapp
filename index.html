@@ -97,7 +97,7 @@ function dispatchAppAction(el,ev){
   case "finishDialog":finishDialog(el,Number(n.index));break;case "finishReading":finishReading(el,Number(n.index));break;
   case "diagnosticChoose":diagnosticChoose(el,Number(n.index));break;case "nextDialog":dialogIndex++;startDialogTrainer();break;
   case "nextReading":readIndex++;renderReading();break;case "nextDiagnostic":diagnosticIndex++;renderDiagnostic();break;
-  case "next":next();break;case "nextListening":nextListening();break;case "nextSpeaking":nextSpeaking();break;
+  case "next":next();break;case "nextWriting":writeIndex++;renderWriting();break;case "nextListening":nextListening();break;case "nextSpeaking":nextSpeaking();break;
   case "startAdaptiveSession":startAdaptiveSession();break;case "startGrammar":startGrammar();break;case "startSentence":startSentence();break;
   case "startDialogue":startDialogue();break;case "startRecognition":startRecognition();break;case "showSpeakingAnswer":showSpeakingAnswer();break;
   case "renderReview":renderReview();break;case "reviewOne":reviewOne();break;case "renderDiagnostic":renderDiagnostic();break;
