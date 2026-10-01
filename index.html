@@ -90,6 +90,21 @@ const $=id=>document.getElementById(id);$("xp").textContent=xp;$("streak").textC
 function save(){localStorage.setItem("es_xp",xp);localStorage.setItem("es_streak",streak);localStorage.setItem("es_progress",JSON.stringify(progress));localStorage.setItem("es_cards",JSON.stringify(cards))}
 function setTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="review")renderReview();if(id==="listen")startListening();if(id==="speak")startSpeaking();if(id==="dialog")startDialogTrainer();if(id==="read")renderReading();if(id==="write")renderWriting();if(id==="progress")renderProgress();if(id==="diagnostic")renderDiagnostic()}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function recommendedSession(){
+ const level=getLevel(), rows=errorSummary();
+ if(rows.length){
+   const top=rows[0][0].split("::");
+   return {type:"targeted",label:"Gezielt üben",detail:"Schwerpunkt: "+top[1]};
+ }
+ const due=dueCards().length;
+ if(due)return {type:"review",label:"Wiederholen",detail:due+" fällige Karte"+(due===1?"":"n")};
+ return {type:"new",label:"Neues lernen",detail:"Nächster Kursabschnitt: "+level};
+}
+function renderRecommendation(){
+ const el=document.getElementById("dailyRecommendation"); if(!el)return;
+ const r=recommendedSession();
+ el.innerHTML='<div class="card" style="margin-top:12px"><div class="tag">Deine nächste Einheit</div><h3>'+r.label+'</h3><p class="small muted">'+r.detail+'</p><button class="btn" onclick="startAdaptiveSession()">Jetzt 10 Minuten lernen</button></div>';
+}
 function renderHome(){
 let unlocked=Object.keys(progress).filter(k=>progress[k]>=lessons.find(l=>l.id==k)?.words.length).length+1;
 unlocked=Math.min(unlocked,lessons.length);
@@ -386,7 +401,7 @@ function renderDiagnostic(){
    const pct=Math.round(diagnosticScore/diagnosticItems.length*100);
    const level=pct>=88?"B2":pct>=63?"B1":pct>=38?"A2":"A1";
    localStorage.setItem("es_level",level);
-   $("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Einstiegspunkt: '+level+'</div><div class="de">'+pct+'% im Kurztest</div><p class="small muted">Das ist eine Trainingsdiagnose, keine offizielle CEFR-Einstufung. Du kannst jederzeit mit einer niedrigeren Stufe beginnen.</p><div id="errorProfile"></div><button class="btn" onclick="setTab(\'learn\')">Lernen starten</button></div>';
+   $("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Einstiegspunkt: '+level+'</div><div class="de">'+pct+'% im Kurztest</div><p class="small muted">Das ist eine Trainingsdiagnose, keine offizielle CEFR-Einstufung. Du kannst jederzeit mit einer niedrigeren Stufe beginnen.</p><div id="errorProfile"></div><div id="dailyRecommendation"></div><button class="btn" onclick="setTab(\'learn\')">Lernen starten</button></div>';
    return;
  }
  diagnosticAnswered=false;
