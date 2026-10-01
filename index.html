@@ -161,7 +161,7 @@ function renderExercise(){
   if(current>=queue.length){
     if(l){progress[l.id]=Math.max(progress[l.id]||0,Math.min(queue.length,l.words.length));save();}
     $("exercise").innerHTML='<div class="flash"><div class="es">¡Muy bien! 🎉</div><div class="de">Lerneinheit abgeschlossen.</div><p class="small muted">Die nächsten Wiederholungen werden automatisch nach deiner Leistung geplant.</p><button class="btn" id="homeBtn">Zur Übersicht</button></div>';
-    $("homeBtn").onclick=()=>setTab("home");return;
+    return;
   }
   answered=false;
   const [es,de]=queue[current],c=cardState(es,de);
@@ -200,13 +200,7 @@ function reviewOne(){
   let opts=[de];while(opts.length<4){let x=all[Math.floor(Math.random()*all.length)][1];if(!opts.includes(x))opts.push(x)}
   opts.sort(()=>Math.random()-.5);
   $("reviewBody").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="reviewFeedback" class="feedback"></div>';
-  document.querySelectorAll("#reviewBody .answer").forEach(b=>b.onclick=()=>{
-    if(answered)return;answered=true;document.querySelectorAll("#reviewBody .answer").forEach(x=>x.disabled=true);
-    let good=b.textContent===de;recordAttempt(good);b.classList.add(good?"correct":"wrong");
-    if(!good)document.querySelectorAll("#reviewBody .answer").forEach(x=>{if(x.textContent===de)x.classList.add("correct")});
-    updateCard(es,de,good);if(good){xp+=10;$("xp").textContent=xp}
-    $("reviewFeedback").innerHTML='<b>'+(good?"Richtig! 🎉":"Nicht ganz.")+'</b><div class="small">Lösung: '+de+'</div><button class="btn" data-action="renderReview">Weiter</button>';
-  });
+
 }
 function startGrammar(){
  answered=false;
@@ -227,22 +221,15 @@ function startGrammar(){
  const q=qs[Math.floor(Math.random()*qs.length)];
  $("exercise").innerHTML='<div class="tag">'+q[0]+'</div><div class="word" style="font-size:25px">'+q[1]+'</div><div class="answers">'+q[3].map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';
  setTab("learn");
- document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll(".answer").forEach(x=>x.disabled=true);
-  const good=b.textContent===q[2];
-  b.classList.add(good?"correct":"wrong");
-  if(!good)document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===q[2])x.classList.add("correct")});
-  recordAttempt(good);if(!good)markGrammarError("Grammatik · "+q[0]);
-  $("feedback").innerHTML='<b>'+(good?"Richtig!":"Noch einmal.")+'</b><div class="small">Lösung: '+q[2]+'</div><button class="btn" data-action="startGrammar">Nächste Aufgabe</button>';
- });
+;
 }
 function speak(t){if("speechSynthesis"in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=.82;speechSynthesis.speak(u)}}
 function startSentence(){
  answered=false;
  const qs=[["A1","Ich heiße Moritz.","Me llamo Moritz."],["A1","Ich studiere Spanisch.","Estudio español."],["A1","Wo ist der Bahnhof?","¿Dónde está la estación?"],["A2","Ich hätte gern einen Kaffee.","Quisiera un café."],["A2","Wie viel kostet das?","¿Cuánto cuesta?"],["A2","Gestern bin ich ins Kino gegangen.","Ayer fui al cine."],["B1","Obwohl es geregnet hat, bin ich spazieren gegangen.","Aunque llovió, fui a pasear."],["B1","Wenn ich mehr Zeit hätte, würde ich öfter reisen.","Si tuviera más tiempo, viajaría más a menudo."],["B2","Trotz der Schwierigkeiten konnten wir das Projekt abschließen.","A pesar de las dificultades, pudimos terminar el proyecto."],["B2","Es ist möglich, dass er morgen kommt.","Es posible que llegue mañana."]];
  const q=qs[Math.floor(Math.random()*qs.length)];
- $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn" type="button" data-action="checkSentence">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio">🔊 Lösung anhören</button></div>';
- $("solutionAudio").onclick=()=>speak(q[2]);
+ $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn" type="button" data-action="checkSentence">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio" data-action="speak" data-text="'+q[2]+'">🔊 Lösung anhören</button></div>';
+
  $("sentenceInput").focus();
  $("sentenceInput").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();checkSentence(q[2])}});
  setTab("learn");
@@ -439,8 +426,8 @@ function finishWriting(ev){
  if(btn)btn.disabled=true;
  recordAttempt(good);if(!good)recordError("writing","satz",x[0],"");
  if(good){xp+=18;$("xp").textContent=xp}save();
- $("writeFeedback").innerHTML='<b>'+(good?"Sehr gut! ✍️":"Vergleiche mit der Referenz und versuche es erneut.")+'</b><div class="small">Referenz: '+x[1]+'</div><button class="btn" id="writeNext">Weiter</button>';
- const next=$("writeNext");if(next)next.onclick=()=>{writeIndex++;renderWriting()};
+ $("writeFeedback").innerHTML='<b>'+(good?"Sehr gut! ✍️":"Vergleiche mit der Referenz und versuche es erneut.")+'</b><div class="small">Referenz: '+x[1]+'</div><button class="btn" id="writeNext" data-action="nextWriting">Weiter</button>';
+
 }
 function renderDiagnostic(){
  const qs=[
