@@ -490,18 +490,7 @@ const diagnosticItems=[
  {skill:"grammar",level:"B2",q:"Es importante que lo ___ cuanto antes.",opts:["hagas","haces","harás","hiciste"],a:0}
 ];
 let diagnosticIndex=0,diagnosticScore=0,diagnosticAnswered=false;
-function renderDiagnostic(){
- const x=diagnosticItems[diagnosticIndex];
- if(!x){
-   const pct=Math.round(diagnosticScore/diagnosticItems.length*100);
-   const level=pct>=88?"B2":pct>=63?"B1":pct>=38?"A2":"A1";
-   store.setItem("es_level",level);
-   $("diagnosticBody").innerHTML='<div class="flash"><div class="es">Dein Einstiegspunkt: '+level+'</div><div class="de">'+pct+'% im Kurztest</div><p class="small muted">Das ist eine Trainingsdiagnose, keine offizielle CEFR-Einstufung. Du kannst jederzeit mit einer niedrigeren Stufe beginnen.</p><div id="diagnosticErrorProfile"></div><div id="dailyRecommendation"></div><button class="btn" onclick="setTab(\'learn\')">Lernen starten</button></div>';
-   return;
- }
- diagnosticAnswered=false;
- $("diagnosticBody").innerHTML='<div class="tag">'+x.level+' · '+(diagnosticIndex+1)+'/'+diagnosticItems.length+'</div><h3>'+x.q+'</h3><div class="answers">'+x.opts.map((o,i)=>'<button class="answer" onclick="answerDiagnostic(this,'+i+')">'+o+'</button>').join("")+'</div><div id="diagFeedback" class="feedback"></div>';
-}
+
 function answerDiagnostic(btn,i){
  if(diagnosticAnswered)return;
  diagnosticAnswered=true;
