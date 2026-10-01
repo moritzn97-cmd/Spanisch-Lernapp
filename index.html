@@ -194,7 +194,27 @@ function startGrammar(){
 }
 renderHome();
 function speak(t){if("speechSynthesis"in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=.82;speechSynthesis.speak(u)}}
-function startSentence(){const qs=[["Ich heiße Moritz.","Me llamo Moritz."],["Ich studiere Spanisch.","Estudio español."],["Wo ist der Bahnhof?","¿Dónde está la estación?"],["Ich hätte gern einen Kaffee.","Quisiera un café."],["Wie viel kostet das?","¿Cuánto cuesta?"],["Ich wohne in Deutschland.","Vivo en Alemania."]];const q=qs[Math.floor(Math.random()*qs.length)];let a=[q[1]];while(a.length<4){const x=qs[Math.floor(Math.random()*qs.length)][1];if(!a.includes(x))a.push(x)}a.sort(()=>Math.random()-.5);$("exercise").innerHTML='<div class="tag">Satztraining</div><div class="word" style="font-size:25px">'+q[0]+'</div><div class="hint">Welche Übersetzung ist richtig?</div><div class="answers">'+a.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div class="sound"><button onclick="speak(\''+q[1].replace(/'/g,"\\'")+'\')">🔊 Spanisch anhören</button></div>';document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{document.querySelectorAll(".answer").forEach(x=>x.disabled=true);const ok=b.textContent===q[1];b.classList.add(ok?"correct":"wrong");if(ok){xp+=15;$("xp").textContent=xp;save()}else{markGrammarError("Satzübersetzung")}});setTab("learn")}
+function startSentence(){
+ const qs=[["A1","Ich heiße Moritz.","Me llamo Moritz."],["A1","Ich studiere Spanisch.","Estudio español."],["A1","Wo ist der Bahnhof?","¿Dónde está la estación?"],["A2","Ich hätte gern einen Kaffee.","Quisiera un café."],["A2","Wie viel kostet das?","¿Cuánto cuesta?"],["A2","Gestern bin ich ins Kino gegangen.","Ayer fui al cine."],["B1","Obwohl es geregnet hat, bin ich spazieren gegangen.","Aunque llovió, fui a pasear."],["B1","Wenn ich mehr Zeit hätte, würde ich öfter reisen.","Si tuviera más tiempo, viajaría más a menudo."],["B2","Trotz der Schwierigkeiten konnten wir das Projekt abschließen.","A pesar de las dificultades, pudimos terminar el proyecto."],["B2","Es ist möglich, dass er morgen kommt.","Es posible que llegue mañana."]];
+ const q=qs[Math.floor(Math.random()*qs.length)];
+ $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio">🔊 Lösung anhören</button></div>';
+ $("solutionAudio").onclick=()=>speak(q[2]);
+ $("sentenceBtn").onclick=()=>checkSentence(q[2]);
+ $("sentenceInput").focus();
+ $("sentenceInput").addEventListener("keydown",ev=>{if(ev.key==="Enter")checkSentence(q[2])});
+ setTab("learn");
+}
+function checkSentence(expected){
+ if(answered)return;
+ answered=true;
+ const input=$("sentenceInput"),given=normalize(input.value),target=normalize(expected);
+ const targetWords=target.split(" "),givenWords=given.split(" ");
+ const overlap=targetWords.filter(w=>givenWords.includes(w)).length/Math.max(1,targetWords.length);
+ const good=given===target,close=!good&&overlap>=.7;
+ input.disabled=true;$("sentenceBtn").disabled=true;recordAttempt(good);
+ if(good){xp+=20;$("xp").textContent=xp;save();}else markGrammarError("Satzübersetzung");
+ $("feedback").innerHTML='<b>'+ (good?"Richtig! 🎉":close?"Fast – der Satz ist sehr nah dran.":"Noch einmal vergleichen.") +'</b><div class="small">Referenz: '+expected+'</div><button class="btn" onclick="startSentence()">Nächster Satz</button>';
+}
 
 // Erweiterter Kurs: A2/B1 Wortschatz und Dialoge
 const advancedLessons=[
