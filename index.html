@@ -142,16 +142,14 @@ function renderExercise(){
   $("counter").textContent=(current+1)+" / "+queue.length;
   $("lessonTag").textContent=l?((l.level||"A1")+" · "+l.title):"Adaptives Training";
   if(recall){
-    $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn">Antwort prüfen</button><div id="feedback" class="feedback"></div>';
-    $("recallBtn").type="button";
-    $("recallBtn").addEventListener("click",function(ev){ev.preventDefault();checkRecall(ev)});
+    $("exercise").innerHTML='<div class="tag">Aktives Abrufen</div><div class="word" style="font-size:27px">'+de+'</div><div class="hint">Tippe das spanische Wort aus dem Gedächtnis.</div><input id="recallInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch eingeben"><button id="recallBtn" class="btn" type="button" onclick="checkRecall(event)">Antwort prüfen</button><div id="feedback" class="feedback"></div>';
     $("recallInput").focus();
     $("recallInput").addEventListener("keydown",ev=>{if(ev.key==="Enter")checkRecall()});
   }else{
     let opts=[de];while(opts.length<4){const x=queue[Math.floor(Math.random()*queue.length)][1];if(!opts.includes(x))opts.push(x)}
     opts.sort(()=>Math.random()-.5);
-    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button class="answer">'+x+'</button>').join("")+'</div><div id="feedback" class="feedback"></div>';
-    document.querySelectorAll("#exercise .answer").forEach(b=>b.onclick=()=>answer(b,es,de));
+    $("exercise").innerHTML='<div class="word">'+es+'</div><div class="hint">Was bedeutet das?</div><div class="answers">'+opts.map(x=>'<button type="button" class="answer" onclick="answer(this,\''+es.replace(/'/g,"&#39;")+'\',\''+x.replace(/'/g,"&#39;")+'\')">'+x+'</button>').join("")+'</div></div><div id="feedback" class="feedback"></div>';
+    
   }
 }
 function checkRecall(ev){
@@ -216,10 +214,8 @@ function startSentence(){
  answered=false;
  const qs=[["A1","Ich heiße Moritz.","Me llamo Moritz."],["A1","Ich studiere Spanisch.","Estudio español."],["A1","Wo ist der Bahnhof?","¿Dónde está la estación?"],["A2","Ich hätte gern einen Kaffee.","Quisiera un café."],["A2","Wie viel kostet das?","¿Cuánto cuesta?"],["A2","Gestern bin ich ins Kino gegangen.","Ayer fui al cine."],["B1","Obwohl es geregnet hat, bin ich spazieren gegangen.","Aunque llovió, fui a pasear."],["B1","Wenn ich mehr Zeit hätte, würde ich öfter reisen.","Si tuviera más tiempo, viajaría más a menudo."],["B2","Trotz der Schwierigkeiten konnten wir das Projekt abschließen.","A pesar de las dificultades, pudimos terminar el proyecto."],["B2","Es ist möglich, dass er morgen kommt.","Es posible que llegue mañana."]];
  const q=qs[Math.floor(Math.random()*qs.length)];
- $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio">🔊 Lösung anhören</button></div>';
+ $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn" type="button" onclick="checkSentence(event)">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio">🔊 Lösung anhören</button></div>';
  $("solutionAudio").onclick=()=>speak(q[2]);
- $("sentenceBtn").type="button";
- $("sentenceBtn").addEventListener("click",function(ev){ev.preventDefault();checkSentence(q[2])});
  $("sentenceInput").focus();
  $("sentenceInput").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();checkSentence(q[2])}});
  setTab("learn");
@@ -403,8 +399,7 @@ const writeItems=[
 ];
 function renderWriting(){
  const x=writeItems[writeIndex%writeItems.length];
- $("writeBody").innerHTML='<div class="tag">Produktion · '+(writeIndex+1)+'/'+writeItems.length+'</div><div class="flash"><div class="de">'+x[0]+'</div></div><input id="writeInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch formulieren"><button class="btn" id="writeCheckBtn" type="button">Antwort prüfen</button><div id="writeFeedback" class="feedback"></div>';
- $("writeCheckBtn").onclick=finishWriting;
+ $("writeBody").innerHTML='<div class="tag">Produktion · '+(writeIndex+1)+'/'+writeItems.length+'</div><div class="flash"><div class="de">'+x[0]+'</div></div><input id="writeInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanisch formulieren"><button class="btn" id="writeCheckBtn" type="button" onclick="finishWriting(event)">Antwort prüfen</button><div id="writeFeedback" class="feedback"></div>';
  $("writeInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();finishWriting(e)}};
 }
 function finishWriting(ev){
