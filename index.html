@@ -230,7 +230,7 @@ function startSentence(){
  answered=false;
  const qs=[["A1","Ich heiße Moritz.","Me llamo Moritz."],["A1","Ich studiere Spanisch.","Estudio español."],["A1","Wo ist der Bahnhof?","¿Dónde está la estación?"],["A2","Ich hätte gern einen Kaffee.","Quisiera un café."],["A2","Wie viel kostet das?","¿Cuánto cuesta?"],["A2","Gestern bin ich ins Kino gegangen.","Ayer fui al cine."],["B1","Obwohl es geregnet hat, bin ich spazieren gegangen.","Aunque llovió, fui a pasear."],["B1","Wenn ich mehr Zeit hätte, würde ich öfter reisen.","Si tuviera más tiempo, viajaría más a menudo."],["B2","Trotz der Schwierigkeiten konnten wir das Projekt abschließen.","A pesar de las dificultades, pudimos terminar el proyecto."],["B2","Es ist möglich, dass er morgen kommt.","Es posible que llegue mañana."]];
  const q=qs[Math.floor(Math.random()*qs.length)];
- $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn" type="button" data-action="checkSentence">Antwort prüfen</button><div id="feedback" class="feedback"></div><div class="sound"><button id="solutionAudio" data-action="speak" data-text="'+q[2]+'">🔊 Lösung anhören</button></div>';
+ $("exercise").innerHTML='<div class="tag">Produktives Satztraining · '+q[0]+'</div><div class="word" style="font-size:24px">'+q[1]+'</div><div class="hint">Formuliere den Satz auf Spanisch aus dem Gedächtnis. Akzente werden bei der Prüfung toleriert.</div><input id="sentenceInput" class="recallInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Spanischen Satz eingeben"><button id="sentenceBtn" class="btn" type="button" data-action="checkSentence">Antwort prüfen</button><div id="sentenceFeedback" class="feedback"></div><div class="sound"><button id="solutionAudio" data-action="speak" data-text="'+q[2]+'">🔊 Lösung anhören</button></div>';
 
  $("sentenceInput").focus();
  $("sentenceInput").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();checkSentence(q[2])}});
@@ -245,7 +245,7 @@ function checkSentence(expected){
  const good=given===target,close=!good&&overlap>=.7;
  input.disabled=true;$("sentenceBtn").disabled=true;recordAttempt(good);
  if(good){xp+=20;$("xp").textContent=xp;save();}else markGrammarError("Satzübersetzung");
- $("feedback").innerHTML='<b>'+ (good?"Richtig! 🎉":close?"Fast – der Satz ist sehr nah dran.":"Noch einmal vergleichen.") +'</b><div class="small">Referenz: '+expected+'</div><button class="btn" data-action="startSentence">Nächster Satz</button>';
+ $("sentenceFeedback").innerHTML='<b>'+ (good?"Richtig! 🎉":close?"Fast – der Satz ist sehr nah dran.":"Noch einmal vergleichen.") +'</b><div class="small">Referenz: '+expected+'</div><button class="btn" data-action="startSentence">Nächster Satz</button>';
 }
 
 // Erweiterter Kurs: A2/B1 Wortschatz und Dialoge
